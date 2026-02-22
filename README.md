@@ -30,22 +30,20 @@ php artisan vendor:publish --tag=ai-action-config
 
 ## Quick Start
 
-### 1. Generate an agent
+### 1. Generate an AI Action
 
 ```bash
-php artisan make:agent SummarisePost
+php artisan make:ai-action SummarisePost
 ```
 
-This creates `app/Ai/Agents/SummarisePost.php` pre-wired with the `AgentAction` contract and `InteractsWithAgent` trait.
+This creates `app/Ai/Actions/SummarisePost.php` pre-wired with the `AgentAction` contract and `InteractsWithAgent` trait.
 
 ### 2. Inject and call `RunAgentAction`
 
 ```php
 <?php
 
-declare(strict_types=1);
-
-use App\Ai\Agents\SummarisePost;
+use App\Ai\Actions\SummarisePost;
 use Pixelworxio\LaravelAiAction\Actions\RunAgentAction;
 use Pixelworxio\LaravelAiAction\DTOs\AgentContext;
 
@@ -65,16 +63,14 @@ class PostController
 
 ---
 
-## Creating an Agent
+## Creating an Action
 
-Every agent is a plain PHP class implementing `AgentAction`. Use the `InteractsWithAgent` trait to satisfy `provider()` and `model()` from config, leaving you only three methods to define.
+Every action is a plain PHP class implementing `AgentAction`. Use the `InteractsWithAgent` trait to satisfy `provider()` and `model()` from config, leaving you only three methods to define.
 
 ```php
 <?php
 
-declare(strict_types=1);
-
-namespace App\Ai\Agents;
+namespace App\Ai\Actions;
 
 use Pixelworxio\LaravelAiAction\Actions\RunAgentAction;
 use Pixelworxio\LaravelAiAction\Concerns\InteractsWithAgent;
@@ -88,7 +84,7 @@ final class SummarisePost implements AgentAction
 
     /**
      * System-level instructions sent to the model on every request.
-     * Keep these stable — they shape the model's behaviour and tone.
+     * Keep these stable — they shape the model's behavior and tone.
      */
     public function instructions(AgentContext $context): string
     {
@@ -108,8 +104,7 @@ final class SummarisePost implements AgentAction
     }
 
     /**
-     * Execute the action. Delegate to RunAgentAction — do not put business
-     * logic here. Pre/post-processing belongs in instructions() and prompt().
+     * Execute the action. Delegate to RunAgentAction.
      */
     public function handle(AgentContext $context): AgentResult
     {
@@ -129,15 +124,13 @@ The core contract every agent must implement.
 ```php
 <?php
 
-declare(strict_types=1);
-
-namespace App\Ai\Agents;
+namespace App\Ai\Actions;
 
 use Pixelworxio\LaravelAiAction\Contracts\AgentAction;
 use Pixelworxio\LaravelAiAction\DTOs\AgentContext;
 use Pixelworxio\LaravelAiAction\DTOs\AgentResult;
 
-final class HelloAgent implements AgentAction
+final class HelloAction implements AgentAction
 {
     public function instructions(AgentContext $context): string
     {
@@ -179,7 +172,7 @@ Tells `RunAgentAction` to activate structured JSON schema mode. The model is con
 
 declare(strict_types=1);
 
-namespace App\Ai\Agents;
+namespace App\Ai\Actions;
 
 use Pixelworxio\LaravelAiAction\Actions\RunAgentAction;
 use Pixelworxio\LaravelAiAction\Concerns\InteractsWithAgent;
@@ -244,9 +237,7 @@ Exposes Laravel AI SDK Tool instances to the model, allowing it to call function
 ```php
 <?php
 
-declare(strict_types=1);
-
-namespace App\Ai\Agents;
+namespace App\Ai\Actions;
 
 use Pixelworxio\LaravelAiAction\Actions\RunAgentAction;
 use Pixelworxio\LaravelAiAction\Concerns\InteractsWithAgent;
@@ -257,7 +248,7 @@ use Pixelworxio\LaravelAiAction\DTOs\AgentResult;
 use App\Ai\Tools\SearchDocsTool;
 use App\Ai\Tools\FetchUrlTool;
 
-final class ResearchAgent implements AgentAction, HasTools
+final class ResearchAction implements AgentAction, HasTools
 {
     use InteractsWithAgent;
 
@@ -298,9 +289,7 @@ Switches `RunAgentAction` into streaming mode. Each text delta fires `onChunk()`
 ```php
 <?php
 
-declare(strict_types=1);
-
-namespace App\Ai\Agents;
+namespace App\Ai\Actions;
 
 use Illuminate\Support\Facades\Cache;
 use Pixelworxio\LaravelAiAction\Actions\RunAgentAction;
@@ -363,8 +352,6 @@ final class StreamingWriterAgent implements AgentAction, HasStreamingResponse
 | `$records` | `array<int, Model>` | Batch of Eloquent records (bulk actions). |
 | `$meta` | `array<string, mixed>` | Arbitrary key/value data for prompt building. |
 | `$userInstruction` | `?string` | Free-text instruction from the end user. |
-| `$panelId` | `?string` | Filament panel identifier (set by filament-ai-action). |
-| `$resourceClass` | `?string` | Filament resource class (set by filament-ai-action). |
 
 ### Static Constructors
 
@@ -449,9 +436,7 @@ if ($result->isStructured()) {
 ```php
 <?php
 
-declare(strict_types=1);
-
-use App\Ai\Agents\SummarisePost;
+use App\Ai\Actions\SummarisePost;
 use Pixelworxio\LaravelAiAction\DTOs\AgentContext;
 use Pixelworxio\LaravelAiAction\Testing\AgentActionAssertions;
 use Pixelworxio\LaravelAiAction\Testing\FakeAgentAction;

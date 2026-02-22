@@ -51,7 +51,7 @@ final class {{ class }} implements AgentAction
      * Execute the agent action and return a typed AgentResult.
      *
      * Delegate to RunAgentAction::execute() — do not put business logic here.
-     * Pre-processing belongs in instructions() and prompt(); post-processing
+     * Pre-processing belongs in instructions() and prompt(); Post-processing
      * belongs in callers that consume the returned AgentResult.
      *
      * @param AgentContext $context The runtime context for this invocation.

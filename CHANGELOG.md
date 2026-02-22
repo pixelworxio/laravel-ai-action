@@ -28,8 +28,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`FakeAgentAction`** — test double extending `RunAgentAction`. Provides `fakeResponse()` to register pre-canned results per agent class, `assertAgentCalled()` and `assertAgentNotCalled()` for invocation-count assertions, and `reset()` for test isolation. Binds itself into the service container so no real API calls are made during tests.
 - **`AgentActionAssertions`** — fluent assertion wrapper for `AgentResult` objects. Methods: `assertText()`, `assertTextContains()`, `assertIsStructured()`, `assertIsText()`, `assertStructured()`, `assertProvider()`, `assertModel()`, `assertInputTokens()`, `assertOutputTokens()`.
 - **`AgentAction` facade** — static proxy to the `RunAgentAction` singleton bound in the container.
-- **`LaravelAiActionServiceProvider`** — Spatie `PackageServiceProvider` that registers the `ai-action` config file, binds `RunAgentAction` as a singleton, and registers the `make:agent` Artisan command.
-- **`make:agent` Artisan command** — generates `app/Ai/Agents/{Name}.php` from `stubs/agent.stub`, resolving the published stub first and falling back to the package bundled stub.
+- **`LaravelAiActionServiceProvider`** — Spatie `PackageServiceProvider` that registers the `ai-action` config file, binds `RunAgentAction` as a singleton, and registers the `make:ai-action` Artisan command.
+- **`make:ai-action` Artisan command** — generates `app/Ai/Actions/{Name}.php` from `stubs/action.stub`, resolving the published stub first and falling back to the package bundled stub.
 - **`config/ai-action.php`** — package configuration exposing `provider`, `model`, `queue`, `max_tokens`, and `logging` keys, each overridable via environment variables.
 
 [Unreleased]: https://github.com/pixelworxio/laravel-ai-action/compare/v1.0.0...HEAD

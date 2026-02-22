@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Pixelworxio\LaravelAiAction;
 
 use Pixelworxio\LaravelAiAction\Actions\RunAgentAction;
-use Pixelworxio\LaravelAiAction\Commands\MakeAgentCommand;
+use Pixelworxio\LaravelAiAction\Commands\MakeAiActionCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -13,7 +13,7 @@ use Spatie\LaravelPackageTools\PackageServiceProvider;
  * Service provider for the laravel-ai-action package.
  *
  * Registers the package configuration, binds RunAgentAction as a singleton
- * in the service container, and registers the make:agent Artisan command.
+ * in the service container, and registers the make:ai-action Artisan command.
  *
  * The configuration file is published under the "ai-action" tag:
  *   php artisan vendor:publish --tag=ai-action-config
@@ -32,7 +32,7 @@ final class LaravelAiActionServiceProvider extends PackageServiceProvider
             ->name('ai-action')
             ->hasConfigFile('ai-action')
             ->hasCommands([
-                MakeAgentCommand::class,
+                MakeAiActionCommand::class,
             ]);
     }
 

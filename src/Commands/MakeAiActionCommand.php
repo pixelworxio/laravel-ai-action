@@ -12,26 +12,26 @@ use Illuminate\Support\Str;
  * Artisan command that generates a new AI agent action class from the agent stub.
  *
  * Usage:
- *   php artisan make:agent MyAgent
+ *   php artisan make:ai-action MyAction
  *
- * The generated file is placed at app/Ai/Agents/{Name}.php and implements
+ * The generated file is placed at app/Ai/Actions/{Name}.php and implements
  * AgentAction using the InteractsWithAgent trait for sensible defaults.
  */
-final class MakeAgentCommand extends Command
+final class MakeAiActionCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'make:agent {name : The name of the agent class to generate}';
+    protected $signature = 'make:ai-action {name : The name of the action class to generate}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Create a new AI agent action class';
+    protected $description = 'Create a new AI action class';
 
     /**
      * Execute the console command.
@@ -47,10 +47,10 @@ final class MakeAgentCommand extends Command
     {
         $name = (string) $this->argument('name');
         $className = Str::studly($name);
-        $targetPath = app_path('Ai/Agents/' . $className . '.php');
+        $targetPath = app_path('Ai/Actions/' . $className . '.php');
 
         if ($files->exists($targetPath)) {
-            $this->components->error("Agent [{$className}] already exists.");
+            $this->components->error("Action [{$className}] already exists.");
 
             return self::FAILURE;
         }
@@ -64,7 +64,7 @@ final class MakeAgentCommand extends Command
         }
 
         $stub = $files->get($stubPath);
-        $namespace = $this->rootNamespace() . 'Ai\\Agents';
+        $namespace = $this->rootNamespace() . 'Ai\\Actions';
 
         $contents = str_replace(
             ['{{ namespace }}', '{{ class }}'],
@@ -80,7 +80,7 @@ final class MakeAgentCommand extends Command
 
         $files->put($targetPath, $contents);
 
-        $this->components->info("Agent [{$className}] created successfully.");
+        $this->components->info("Action [{$className}] created successfully.");
         $this->components->twoColumnDetail('Path', $targetPath);
 
         return self::SUCCESS;
@@ -96,13 +96,13 @@ final class MakeAgentCommand extends Command
      */
     private function resolveStubPath(): string
     {
-        $published = base_path('stubs/agent.stub');
+        $published = base_path('stubs/ai-action.stub');
 
         if (file_exists($published)) {
             return $published;
         }
 
-        return dirname(__DIR__, 2) . '/stubs/agent.stub';
+        return dirname(__DIR__, 2) . '/stubs/ai-action.stub';
     }
 
     /**
