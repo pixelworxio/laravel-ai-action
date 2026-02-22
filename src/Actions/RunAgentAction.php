@@ -25,8 +25,10 @@ use Pixelworxio\LaravelAiAction\Exceptions\AgentException;
  * HasStructuredOutput, HasStreamingResponse) and selects the appropriate
  * execution branch accordingly. All provider calls are wrapped to surface
  * clear AgentException instances on failure.
+ *
+ * Not declared final to allow FakeAgentAction to extend it in tests.
  */
-final class RunAgentAction
+class RunAgentAction
 {
     /**
      * Execute the given agent action and return a typed AgentResult.
