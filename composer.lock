@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "da2c4027aacd6bf55bbbcf775565d1e4",
+    "content-hash": "11b4dc8682fd4fb9324665ae6d666154",
     "packages": [
         {
             "name": "brick/math",
@@ -1054,16 +1054,16 @@
         },
         {
             "name": "laravel/ai",
-            "version": "v0.1.5",
+            "version": "v0.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/ai.git",
-                "reference": "da44d1ada5f6b7a6ba20c66d0eaf9fc3f47acee1"
+                "reference": "7487f1208ba95a7d32e1609abb1b7f7a801a74fe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/ai/zipball/da44d1ada5f6b7a6ba20c66d0eaf9fc3f47acee1",
-                "reference": "da44d1ada5f6b7a6ba20c66d0eaf9fc3f47acee1",
+                "url": "https://api.github.com/repos/laravel/ai/zipball/7487f1208ba95a7d32e1609abb1b7f7a801a74fe",
+                "reference": "7487f1208ba95a7d32e1609abb1b7f7a801a74fe",
                 "shasum": ""
             },
             "require": {
@@ -1116,7 +1116,7 @@
                 "issues": "https://github.com/laravel/ai/issues",
                 "source": "https://github.com/laravel/ai"
             },
-            "time": "2026-02-12T19:31:10+00:00"
+            "time": "2026-02-19T14:27:55+00:00"
         },
         {
             "name": "laravel/framework",
@@ -10275,5 +10275,5 @@
         "php": "^8.4"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.9.0"
+    "plugin-api-version": "2.6.0"
 }
