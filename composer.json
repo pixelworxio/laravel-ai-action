@@ -1,0 +1,52 @@
+{
+    "name": "pixelworxio/laravel-ai-action",
+    "description": "AI-powered actions for Laravel — a clean integration layer built on laravel/ai",
+    "keywords": ["Laravel", "AI", "actions"],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "@whoisthisstud",
+            "email": "44807533+whoisthisstud@users.noreply.github.com",
+            "role": "Author"
+        }
+    ],
+    "require": {
+        "php": "^8.4",
+        "laravel/framework": "^12.0",
+        "laravel/ai": "^0.1",
+        "spatie/laravel-package-tools": "^1.16"
+    },
+    "require-dev": {
+        "pestphp/pest": "^4.0",
+        "pestphp/pest-plugin-laravel": "^4.0",
+        "pestphp/pest-plugin-arch": "^4.0",
+        "orchestra/testbench": "^10.0",
+        "larastan/larastan": "^3.0",
+        "phpstan/extension-installer": "^1.4",
+        "phpstan/phpstan-deprecation-rules": "^2.0",
+        "laravel/pint": "^1.14",
+        "nunomaduro/collision": "^8.8"
+    },
+    "autoload": { "psr-4": { "Pixelworxio\\LaravelAiAction\\": "src/" } },
+    "autoload-dev": { "psr-4": { "Pixelworxio\\LaravelAiAction\\Tests\\": "tests/" } },
+    "extra": {
+        "laravel": {
+            "providers": ["Pixelworxio\\LaravelAiAction\\LaravelAiActionServiceProvider"]
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/pest",
+        "test-coverage": "vendor/bin/pest --coverage",
+        "analyse": "vendor/bin/phpstan analyse",
+        "format": "vendor/bin/pint"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
+        }
+    }
+}
