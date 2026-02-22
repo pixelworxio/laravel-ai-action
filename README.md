@@ -14,9 +14,8 @@
 
 ---
 
-## Why not just use `laravel/ai` directly?
-
-`laravel/ai` is an excellent SDK. This package is not a replacement — it's an **architectural pattern** on top of it.
+## What does this package do?
+This package offers an architectural pattern that sits on top of `laravel/ai` to provide a consistent, structured, and testable way to execute AI actions in your Laravel app.
 
 | | `laravel/ai` | `laravel-ai-action` |
 |---|---|---|
