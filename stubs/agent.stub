@@ -1,0 +1,40 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{ namespace }};
+
+use Pixelworxio\LaravelAiAction\Concerns\InteractsWithAgent;
+use Pixelworxio\LaravelAiAction\Contracts\AgentAction;
+use Pixelworxio\LaravelAiAction\DTOs\AgentContext;
+use Pixelworxio\LaravelAiAction\DTOs\AgentResult;
+use Pixelworxio\LaravelAiAction\Enums\OutputFormat;
+
+final class {{ class }} implements AgentAction
+{
+    use InteractsWithAgent;
+
+    /**
+     * Return the system-level instructions for the agent.
+     */
+    public function instructions(AgentContext $context): string
+    {
+        return '';
+    }
+
+    /**
+     * Return the user-facing prompt for the agent.
+     */
+    public function prompt(AgentContext $context): string
+    {
+        return '';
+    }
+
+    /**
+     * Execute the agent action and return a typed result.
+     */
+    public function handle(AgentContext $context): AgentResult
+    {
+        return app(\Pixelworxio\LaravelAiAction\Actions\RunAgentAction::class)->execute($this, $context);
+    }
+}
