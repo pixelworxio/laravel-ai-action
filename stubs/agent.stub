@@ -4,18 +4,25 @@ declare(strict_types=1);
 
 namespace {{ namespace }};
 
+use Pixelworxio\LaravelAiAction\Actions\RunAgentAction;
 use Pixelworxio\LaravelAiAction\Concerns\InteractsWithAgent;
 use Pixelworxio\LaravelAiAction\Contracts\AgentAction;
 use Pixelworxio\LaravelAiAction\DTOs\AgentContext;
 use Pixelworxio\LaravelAiAction\DTOs\AgentResult;
-use Pixelworxio\LaravelAiAction\Enums\OutputFormat;
 
 final class {{ class }} implements AgentAction
 {
     use InteractsWithAgent;
 
     /**
-     * Return the system-level instructions for the agent.
+     * Return the system-level instructions for this agent.
+     *
+     * These are sent as the system prompt on every invocation. Describe the
+     * agent's role, persona, output format, and any invariant constraints here.
+     * Keep this stable across requests — per-request variation belongs in prompt().
+     *
+     * @param AgentContext $context The runtime context for this invocation.
+     * @return string The system prompt / instructions string.
      */
     public function instructions(AgentContext $context): string
     {
@@ -23,7 +30,17 @@ final class {{ class }} implements AgentAction
     }
 
     /**
-     * Return the user-facing prompt for the agent.
+     * Return the user-facing prompt for this agent.
+     *
+     * Build the prompt dynamically from $context — pull in record attributes,
+     * meta values, or user instructions. This is the variable input the model
+     * reasons over on each individual call.
+     *
+     * Example:
+     *   return sprintf("Summarise the following:\n\n%s", $context->record->body);
+     *
+     * @param AgentContext $context The runtime context for this invocation.
+     * @return string The user prompt string.
      */
     public function prompt(AgentContext $context): string
     {
@@ -31,10 +48,17 @@ final class {{ class }} implements AgentAction
     }
 
     /**
-     * Execute the agent action and return a typed result.
+     * Execute the agent action and return a typed AgentResult.
+     *
+     * Delegate to RunAgentAction::execute() — do not put business logic here.
+     * Pre-processing belongs in instructions() and prompt(); post-processing
+     * belongs in callers that consume the returned AgentResult.
+     *
+     * @param AgentContext $context The runtime context for this invocation.
+     * @return AgentResult The typed result wrapping the AI response.
      */
     public function handle(AgentContext $context): AgentResult
     {
-        return app(\Pixelworxio\LaravelAiAction\Actions\RunAgentAction::class)->execute($this, $context);
+        return app(RunAgentAction::class)->execute($this, $context);
     }
 }
