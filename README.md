@@ -4,7 +4,7 @@
   <a href="https://packagist.org/packages/pixelworxio/laravel-ai-action"><img src="https://img.shields.io/packagist/v/pixelworxio/laravel-ai-action" alt="Latest Stable Version"></a>
   <a href="https://packagist.org/packages/pixelworxio/laravel-ai-action"><img src="https://img.shields.io/packagist/dt/pixelworxio/laravel-ai-action" alt="Total Downloads"></a>
   <a href="https://packagist.org/packages/pixelworxio/laravel-ai-action"><img src="https://img.shields.io/packagist/l/pixelworxio/laravel-ai-action" alt="License"></a>
-  <a href="https://github.com/pixelworxio/livewire-workflows/actions/workflows/run-tests.yml"><img src="https://img.shields.io/github/actions/workflow/status/pixelworxio/livewire-workflows/run-tests.yml?branch=main&label=tests&style=flat-square" alt="GitHub Tests Action Status"></a>
+  <a href="https://github.com/pixelworxio/laravel-ai-action/actions/workflows/run-tests.yml"><img src="https://img.shields.io/github/actions/workflow/status/pixelworxio/laravel-ai-action/run-tests.yml?branch=main&label=tests&style=flat-square" alt="GitHub Tests Action Status"></a>
   <a href="https://github.com/pixelworxio/laravel-ai-action"><img src="https://img.shields.io/github/stars/pixelworxio/laravel-ai-action?style=flat-square" alt="GitHub Stars"></a>
 </p>
 
