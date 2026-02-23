@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Pixelworxio\LaravelAiAction\Actions;
 
+use Illuminate\Contracts\JsonSchema\JsonSchema;
+use Illuminate\JsonSchema\Types\Type;
 use Illuminate\Support\Facades\Log;
 use Laravel\Ai\AnonymousAgent;
-use Laravel\Ai\StructuredAnonymousAgent;
 use Laravel\Ai\Streaming\Events\TextDelta;
+use Laravel\Ai\StructuredAnonymousAgent;
 use Pixelworxio\LaravelAiAction\Contracts\AgentAction;
 use Pixelworxio\LaravelAiAction\Contracts\HasStreamingResponse;
 use Pixelworxio\LaravelAiAction\Contracts\HasStructuredOutput;
@@ -41,9 +43,10 @@ class RunAgentAction
      * When HasTools is also implemented the tools are registered regardless
      * of which of the above branches is taken.
      *
-     * @param AgentAction  $agent   The agent action to execute.
-     * @param AgentContext $context The runtime context for the invocation.
+     * @param  AgentAction  $agent  The agent action to execute.
+     * @param  AgentContext  $context  The runtime context for the invocation.
      * @return AgentResult The typed result wrapping the AI response.
+     *
      * @throws AgentException When the AI provider call fails.
      */
     public function execute(AgentAction $agent, AgentContext $context): AgentResult
@@ -76,8 +79,8 @@ class RunAgentAction
     /**
      * Execute the agent in standard text-generation mode.
      *
-     * @param AgentAction  $agent   The agent action.
-     * @param AgentContext $context The runtime context.
+     * @param  AgentAction  $agent  The agent action.
+     * @param  AgentContext  $context  The runtime context.
      * @return AgentResult The text result.
      */
     private function executeText(AgentAction $agent, AgentContext $context): AgentResult
@@ -109,8 +112,8 @@ class RunAgentAction
      * agent's outputSchema() method, then passes the raw structured array
      * through mapOutput() before constructing the result.
      *
-     * @param AgentAction&HasStructuredOutput $agent   The structured agent action.
-     * @param AgentContext                    $context The runtime context.
+     * @param  AgentAction&HasStructuredOutput  $agent  The structured agent action.
+     * @param  AgentContext  $context  The runtime context.
      * @return AgentResult The structured result.
      */
     private function executeStructured(
@@ -124,8 +127,8 @@ class RunAgentAction
             instructions: $agent->instructions($context),
             messages: [],
             tools: $tools,
-            schema: function ($jsonSchema) use ($schema): array {
-                return $schema;
+            schema: function (JsonSchema $jsonSchema) use ($schema): Type {
+                return $this->buildSchema($jsonSchema, $schema);
             },
         );
 
@@ -135,7 +138,7 @@ class RunAgentAction
             model: $agent->model(),
         );
 
-        $raw = (array) $response;
+        $raw = $response->toArray();
         $mapped = $agent->mapOutput($raw);
 
         return new AgentResult(
@@ -157,8 +160,8 @@ class RunAgentAction
      * onChunk(). If onChunk() returns false the stream is halted. Once the
      * stream is fully consumed onComplete() is called with a final AgentResult.
      *
-     * @param AgentAction&HasStreamingResponse $agent   The streaming agent action.
-     * @param AgentContext                     $context The runtime context.
+     * @param  AgentAction&HasStreamingResponse  $agent  The streaming agent action.
+     * @param  AgentContext  $context  The runtime context.
      * @return AgentResult The final result after stream completion.
      */
     private function executeStreaming(
@@ -205,8 +208,8 @@ class RunAgentAction
     /**
      * Build a plain AnonymousAgent with the correct instructions and optional tools.
      *
-     * @param AgentAction  $agent   The agent action providing instructions and optional tools.
-     * @param AgentContext $context The runtime context used to build the instructions string.
+     * @param  AgentAction  $agent  The agent action providing instructions and optional tools.
+     * @param  AgentContext  $context  The runtime context used to build the instructions string.
      * @return AnonymousAgent The configured anonymous agent instance.
      */
     private function buildAnonymousAgent(AgentAction $agent, AgentContext $context): AnonymousAgent
@@ -218,5 +221,86 @@ class RunAgentAction
             messages: [],
             tools: $tools,
         );
+    }
+
+    /**
+     * Recursively convert a plain JSON Schema array into a JsonSchema Type object
+     * tree that the Illuminate\JsonSchema serializer expects.
+     *
+     * The agent's outputSchema() returns a raw PHP array following the JSON Schema
+     * spec. StructuredAnonymousAgent's schema closure must return a Type instance,
+     * not a plain array, so we walk the array and map each node to the appropriate
+     * JsonSchema factory method.
+     *
+     * @param  JsonSchema  $factory  The factory passed by StructuredAnonymousAgent.
+     * @param  array<string, mixed>  $schema  The plain JSON Schema array from outputSchema().
+     */
+    private function buildSchema(JsonSchema $factory, array $schema): Type
+    {
+        $type = $schema['type'] ?? 'string';
+        $required = (array) ($schema['required'] ?? []);
+
+        return match ($type) {
+            'object' => $this->buildObjectType($factory, $schema, $required),
+            'array' => $this->buildArrayType($factory, $schema),
+            'integer', 'number' => $type === 'integer' ? $factory->integer() : $factory->number(),
+            'boolean' => $factory->boolean(),
+            default => $this->buildStringType($factory, $schema),
+        };
+    }
+
+    /**
+     * Build an ObjectType from a JSON Schema object node.
+     *
+     * @param  array<string>  $required  List of required property keys.
+     * @param  array<string, mixed>  $schema  The object schema array.
+     */
+    private function buildObjectType(JsonSchema $factory, array $schema, array $required): Type
+    {
+        $properties = [];
+
+        foreach ($schema['properties'] ?? [] as $key => $propSchema) {
+            $prop = $this->buildSchema($factory, $propSchema);
+
+            if (in_array($key, $required, true)) {
+                $prop->required();
+            }
+
+            $properties[$key] = $prop;
+        }
+
+        return $factory->object($properties);
+    }
+
+    /**
+     * Build an ArrayType from a JSON Schema array node.
+     *
+     * @param  array<string, mixed>  $schema  The array schema node.
+     */
+    private function buildArrayType(JsonSchema $factory, array $schema): Type
+    {
+        $arrayType = $factory->array();
+
+        if (isset($schema['items']) && is_array($schema['items'])) {
+            $arrayType->items($this->buildSchema($factory, $schema['items']));
+        }
+
+        return $arrayType;
+    }
+
+    /**
+     * Build a StringType, applying enum values when present.
+     *
+     * @param  array<string, mixed>  $schema  The string schema node.
+     */
+    private function buildStringType(JsonSchema $factory, array $schema): Type
+    {
+        $stringType = $factory->string();
+
+        if (isset($schema['enum']) && is_array($schema['enum'])) {
+            $stringType->enum($schema['enum']);
+        }
+
+        return $stringType;
     }
 }
