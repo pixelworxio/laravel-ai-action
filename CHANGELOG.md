@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/pixelworxio/laravel-ai-action/compare/1.0.1...HEAD)
+## [Unreleased](https://github.com/pixelworxio/laravel-ai-action/compare/1.0.2...HEAD)
 
 ## [1.0.0](https://github.com/pixelworxio/laravel-ai-action/releases/tag/v1.0.0) - unreleased
 
@@ -31,6 +31,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`LaravelAiActionServiceProvider`** — Spatie `PackageServiceProvider` that registers the `ai-action` config file, binds `RunAgentAction` as a singleton, and registers the `make:ai-action` Artisan command.
 - **`make:ai-action` Artisan command** — generates `app/Ai/Actions/{Name}.php` from `stubs/action.stub`, resolving the published stub first and falling back to the package bundled stub.
 - **`config/ai-action.php`** — package configuration exposing `provider`, `model`, `queue`, `max_tokens`, and `logging` keys, each overridable via environment variables.
+
+## [1.0.2](https://github.com/pixelworxio/laravel-ai-action/compare/1.0.1...1.0.2) - 2026-02-23
+
+### What's Changed
+
+* touch ups by @whoisthisstud in https://github.com/pixelworxio/laravel-ai-action/pull/3
+
+**Full Changelog**: https://github.com/pixelworxio/laravel-ai-action/compare/1.0.1...1.0.2
 
 ## [1.0.1](https://github.com/pixelworxio/laravel-ai-action/compare/v1.0.0...1.0.1) - 2026-02-23
 
