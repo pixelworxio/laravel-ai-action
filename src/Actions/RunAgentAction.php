@@ -8,6 +8,7 @@ use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Illuminate\JsonSchema\Types\Type;
 use Illuminate\Support\Facades\Log;
 use Laravel\Ai\AnonymousAgent;
+use Laravel\Ai\Responses\StructuredAgentResponse;
 use Laravel\Ai\Streaming\Events\TextDelta;
 use Laravel\Ai\StructuredAnonymousAgent;
 use Pixelworxio\LaravelAiAction\Contracts\AgentAction;
@@ -137,6 +138,12 @@ class RunAgentAction
             provider: $agent->provider(),
             model: $agent->model(),
         );
+
+        if (! $response instanceof StructuredAgentResponse) {
+            throw new \UnexpectedValueException(
+                sprintf('Expected StructuredAgentResponse, got %s.', $response::class)
+            );
+        }
 
         $raw = $response->toArray();
         $mapped = $agent->mapOutput($raw);
