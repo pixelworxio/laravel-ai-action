@@ -128,8 +128,8 @@ class RunAgentAction
             instructions: $agent->instructions($context),
             messages: [],
             tools: $tools,
-            schema: function (JsonSchema $jsonSchema) use ($schema): Type {
-                return $this->buildSchema($jsonSchema, $schema);
+            schema: function (JsonSchema $jsonSchema) use ($schema): array {
+                return $this->buildSchemaProperties($jsonSchema, $schema);
             },
         );
 
@@ -231,16 +231,44 @@ class RunAgentAction
     }
 
     /**
-     * Recursively convert a plain JSON Schema array into a JsonSchema Type object
-     * tree that the Illuminate\JsonSchema serializer expects.
+     * Return the top-level properties array that StructuredAnonymousAgent::schema() must return.
      *
-     * The agent's outputSchema() returns a raw PHP array following the JSON Schema
-     * spec. StructuredAnonymousAgent's schema closure must return a Type instance,
-     * not a plain array, so we walk the array and map each node to the appropriate
-     * JsonSchema factory method.
+     * The SDK's HasStructuredOutput::schema() contract returns array<string, Type> — a flat
+     * map of property name to Type object — which the SDK then wraps in an ObjectSchema
+     * internally. This method extracts and builds that map from the agent's outputSchema()
+     * array, handling the required flags for each top-level property.
      *
      * @param  JsonSchema  $factory  The factory passed by StructuredAnonymousAgent.
      * @param  array<string, mixed>  $schema  The plain JSON Schema array from outputSchema().
+     * @return array<string, Type>
+     */
+    private function buildSchemaProperties(JsonSchema $factory, array $schema): array
+    {
+        $required = (array) ($schema['required'] ?? []);
+        $properties = [];
+
+        foreach ($schema['properties'] ?? [] as $key => $propSchema) {
+            $prop = $this->buildSchema($factory, $propSchema);
+
+            if (in_array($key, $required, true)) {
+                $prop->required();
+            }
+
+            $properties[$key] = $prop;
+        }
+
+        return $properties;
+    }
+
+    /**
+     * Recursively convert a plain JSON Schema node into a JsonSchema Type object.
+     *
+     * Used for nested schema nodes (object properties, array items, etc.).
+     * The top-level call is handled by buildSchemaProperties(), which returns
+     * the flat array<string, Type> that the SDK's schema() contract requires.
+     *
+     * @param  JsonSchema  $factory  The factory passed by StructuredAnonymousAgent.
+     * @param  array<string, mixed>  $schema  A single JSON Schema node from outputSchema().
      */
     private function buildSchema(JsonSchema $factory, array $schema): Type
     {
