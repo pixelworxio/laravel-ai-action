@@ -107,5 +107,3 @@ See [CHANGELOG.md](CHANGELOG.md).
 ## License
 
 MIT — see [LICENSE](LICENSE).
-
-TEST
