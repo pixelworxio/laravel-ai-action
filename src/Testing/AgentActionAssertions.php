@@ -323,10 +323,9 @@ final class AgentActionAssertions
     {
         $reflection = new ReflectionClass(FakeAgentAction::class);
         $property   = $reflection->getProperty('calls');
-        $property->setAccessible(true);
 
         /** @var array<class-string, list<AgentContext>> $calls */
-        $calls = $property->getValue();
+        $calls = $property->getValue(null);
 
         PHPUnit::assertArrayHasKey(
             $agentClass,
@@ -339,6 +338,9 @@ final class AgentActionAssertions
             sprintf('Agent [%s] has no recorded invocations.', $agentClass),
         );
 
-        return end($calls[$agentClass]);
+        $lastContext = end($calls[$agentClass]);
+        PHPUnit::assertInstanceOf(AgentContext::class, $lastContext);
+
+        return $lastContext;
     }
 }

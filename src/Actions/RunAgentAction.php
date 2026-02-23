@@ -135,7 +135,7 @@ class RunAgentAction
             model: $agent->model(),
         );
 
-        $raw = $response->toArray();
+        $raw = (array) $response;
         $mapped = $agent->mapOutput($raw);
 
         return new AgentResult(
@@ -190,8 +190,8 @@ class RunAgentAction
             text: $fullText,
             format: OutputFormat::Text,
             structured: null,
-            inputTokens: $usage?->promptTokens ?? 0,
-            outputTokens: $usage?->completionTokens ?? 0,
+            inputTokens: $usage->promptTokens ?? 0,
+            outputTokens: $usage->completionTokens ?? 0,
             provider: $agent->provider(),
             model: $agent->model(),
             metadata: [],

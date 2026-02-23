@@ -45,7 +45,12 @@ final class MakeAiActionCommand extends Command
      */
     public function handle(Filesystem $files): int
     {
-        $name = (string) $this->argument('name');
+        $name = $this->argument('name');
+        if (! is_string($name)) {
+            $this->components->error('The name argument must be a string.');
+
+            return self::FAILURE;
+        }
         $className = Str::studly($name);
         $targetPath = app_path('Ai/Actions/' . $className . '.php');
 
