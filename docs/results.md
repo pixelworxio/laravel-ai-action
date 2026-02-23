@@ -26,7 +26,7 @@ $result->toArray();      // serialize all properties to an associative array
 
 ```php
 $context = AgentContext::fromRecord($post);
-$result  = $runner->execute(new SummarisePost(), $context);
+$result  = $runner->execute(new SummarizePost(), $context);
 
 echo $result->text;         // "This post covers..."
 echo $result->inputTokens;  // 320

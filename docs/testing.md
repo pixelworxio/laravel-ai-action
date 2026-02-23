@@ -15,7 +15,7 @@ beforeEach(function (): void {
 ## Registering Fake Responses
 
 ```php
-FakeAgentAction::fakeResponse(SummarisePost::class, 'This post covers Laravel testing.');
+FakeAgentAction::fakeResponse(SummarizePost::class, 'This post covers Laravel testing.');
 
 // With structured output
 FakeAgentAction::fakeResponse(ClassifyPost::class, '', [
@@ -28,14 +28,14 @@ FakeAgentAction::fakeResponse(ClassifyPost::class, '', [
 ## Assertions
 
 ```php
-it('summarises a post', function (): void {
-    FakeAgentAction::fakeResponse(SummarisePost::class, 'This post covers Laravel testing.');
+it('summarizes a post', function (): void {
+    FakeAgentAction::fakeResponse(SummarizePost::class, 'This post covers Laravel testing.');
 
     $context = AgentContext::fromRecord($this->post);
-    $result  = app(RunAgentAction::class)->execute(new SummarisePost(), $context);
+    $result  = app(RunAgentAction::class)->execute(new SummarizePost(), $context);
 
-    FakeAgentAction::assertAgentCalled(SummarisePost::class);
-    FakeAgentAction::assertAgentCalled(SummarisePost::class, times: 1);
+    FakeAgentAction::assertAgentCalled(SummarizePost::class);
+    FakeAgentAction::assertAgentCalled(SummarizePost::class, times: 1);
     FakeAgentAction::assertAgentNotCalled(ClassifyPost::class);
 
     expect($result->text)->toBe('This post covers Laravel testing.');

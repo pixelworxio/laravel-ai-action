@@ -5,10 +5,10 @@ Every AI capability is a plain PHP class implementing `AgentAction`. Use `Intera
 ## Generating an Action
 
 ```bash
-php artisan make:ai-action SummarisePost
+php artisan make:ai-action SummarizePost
 ```
 
-Creates `app/Ai/Actions/SummarisePost.php` pre-wired with the `AgentAction` contract and `InteractsWithAgent` trait.
+Creates `app/Ai/Actions/SummarizePost.php` pre-wired with the `AgentAction` contract and `InteractsWithAgent` trait.
 
 ## `AgentAction` Contract
 
@@ -124,7 +124,7 @@ final class StreamSummary implements AgentAction, HasStreamingResponse
 
     public function prompt(AgentContext $context): string
     {
-        return sprintf("Summarise:\n\n%s", $context->record->body);
+        return sprintf("Summarize:\n\n%s", $context->record->body);
     }
 
     public function handle(AgentContext $context): AgentResult

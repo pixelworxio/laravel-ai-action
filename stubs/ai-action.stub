@@ -37,7 +37,7 @@ final class {{ class }} implements AgentAction
      * reasons over on each individual call.
      *
      * Example:
-     *   return sprintf("Summarise the following:\n\n%s", $context->record->body);
+     *   return sprintf("Summarize the following:\n\n%s", $context->record->body);
      *
      * @param AgentContext $context The runtime context for this invocation.
      * @return string The user prompt string.

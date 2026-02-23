@@ -43,7 +43,7 @@ Safe to share a base context across multiple agents without mutation side-effect
 Use `InteractsWithContext` for helper methods inside an agent:
 
 ```php
-final class SummarisePost implements AgentAction
+final class SummarizePost implements AgentAction
 {
     use InteractsWithAgent, InteractsWithContext;
 
@@ -52,7 +52,7 @@ final class SummarisePost implements AgentAction
         $post     = $this->requireRecord($context, Post::class); // throws InvalidContextException if missing
         $language = $this->meta($context, 'language', 'en');     // with default
 
-        return sprintf("Summarise in %s:\n\n%s", $language, $post->body);
+        return sprintf("Summarize in %s:\n\n%s", $language, $post->body);
     }
 }
 ```

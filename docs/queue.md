@@ -9,10 +9,10 @@ use Pixelworxio\LaravelAiAction\Jobs\RunAgentActionJob;
 
 $context = AgentContext::fromRecord($post);
 
-RunAgentActionJob::dispatch(new SummarisePost(), $context);
+RunAgentActionJob::dispatch(new SummarizePost(), $context);
 
 // On a specific queue
-RunAgentActionJob::dispatch(new SummarisePost(), $context)->onQueue('ai');
+RunAgentActionJob::dispatch(new SummarizePost(), $context)->onQueue('ai');
 ```
 
 The queue name defaults to `config('ai-action.queue')` (`AI_ACTION_QUEUE` env var).

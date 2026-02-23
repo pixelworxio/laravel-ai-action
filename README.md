@@ -52,23 +52,23 @@ php artisan vendor:publish --tag=ai-action-config
 ## Quick Start
 
 ```bash
-php artisan make:ai-action SummarisePost
+php artisan make:ai-action SummarizePost
 ```
 
 ```php
-// app/Ai/Actions/SummarisePost.php
-final class SummarisePost implements AgentAction
+// app/Ai/Actions/SummarizePost.php
+final class SummarizePost implements AgentAction
 {
     use InteractsWithAgent;
 
     public function instructions(AgentContext $context): string
     {
-        return 'You are a concise technical writer. Summarise in three sentences.';
+        return 'You are a concise technical writer. Summarize in three sentences.';
     }
 
     public function prompt(AgentContext $context): string
     {
-        return sprintf("Summarise:\n\n%s", $context->record->body);
+        return sprintf("Summarize:\n\n%s", $context->record->body);
     }
 
     public function handle(AgentContext $context): AgentResult
@@ -81,7 +81,7 @@ final class SummarisePost implements AgentAction
 ```php
 // In a controller or job
 $context = AgentContext::fromRecord($post);
-$result  = $this->runner->execute(new SummarisePost(), $context);
+$result  = $this->runner->execute(new SummarizePost(), $context);
 
 echo $result->text;         // "This post covers..."
 echo $result->inputTokens;  // 320

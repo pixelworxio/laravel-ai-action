@@ -29,7 +29,7 @@ function makeJobAgent(): AgentAction
 
         public function prompt(AgentContext $context): string
         {
-            return 'Summarise the context.';
+            return 'Summarize the context.';
         }
 
         public function provider(): string
