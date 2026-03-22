@@ -30,7 +30,7 @@ If you're wiring AI calls directly into controllers or service classes, you're r
 | Dependency | Version |
 |---|---|
 | PHP | `^8.4` |
-| Laravel | `^12.0` |
+| Laravel | `^12.0 \|\| ^13.0` |
 | `laravel/ai` | `^0.1` |
 
 ---
