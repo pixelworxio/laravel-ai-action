@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/pixelworxio/laravel-ai-action/compare/1.0.2...HEAD)
 
+### Added
+
+- Laravel 13 support (`laravel/framework: ^12.0 || ^13.0`)
+- `laravel/ai` v0.3 support (`laravel/ai: ^0.1 || ^0.2 || ^0.3`)
+
 ## [1.0.0](https://github.com/pixelworxio/laravel-ai-action/releases/tag/v1.0.0) - unreleased
 
 ### Added
