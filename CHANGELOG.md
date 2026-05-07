@@ -5,11 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/pixelworxio/laravel-ai-action/compare/1.0.4...HEAD)
+## [Unreleased](https://github.com/pixelworxio/laravel-ai-action/compare/1.0.5...HEAD)
 
 ### Added
 
 - **MCP Bridge (opt-in)** — expose any `AgentAction` as a Laravel MCP tool with zero changes to the existing action API. Gated behind `AI_ACTION_MCP_ENABLED=true` and a `class_exists(\Laravel\Mcp\Server\Tool::class)` guard; PSR-4 lazy autoload stays cold when the bridge is disabled.
+  
   - `Pixelworxio\LaravelAiAction\Mcp\Contracts\ExposedAsMcpTool` — interface declaring `mcpName()`, `mcpDescription()`, `mcpInputSchema()`, and `resolveContext()`.
   - `Pixelworxio\LaravelAiAction\Mcp\Attributes\ExposesAsMcpTool` — PHP attribute for auto-discovery.
   - `Pixelworxio\LaravelAiAction\Mcp\Concerns\BridgesAgentContextToMcp` — trait providing `resolveRecord()`, `resolveRecords()`, and `metaFromInput()` helpers.
@@ -22,7 +23,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `docs/mcp.md` — full worked example, auth scoping guidance, annotation reference, and CI matrix instructions.
   
 - Laravel 13 support (`laravel/framework: ^12.0 || ^13.0`)
+  
 - `laravel/ai` v0.3 support (`laravel/ai: ^0.1 || ^0.2 || ^0.3`)
+  
 
 ## [1.0.0](https://github.com/pixelworxio/laravel-ai-action/releases/tag/v1.0.0) - unreleased
 
@@ -48,6 +51,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`LaravelAiActionServiceProvider`** — Spatie `PackageServiceProvider` that registers the `ai-action` config file, binds `RunAgentAction` as a singleton, and registers the `make:ai-action` Artisan command.
 - **`make:ai-action` Artisan command** — generates `app/Ai/Actions/{Name}.php` from `stubs/action.stub`, resolving the published stub first and falling back to the package bundled stub.
 - **`config/ai-action.php`** — package configuration exposing `provider`, `model`, `queue`, `max_tokens`, and `logging` keys, each overridable via environment variables.
+
+## [1.0.5](https://github.com/pixelworxio/laravel-ai-action/compare/1.0.4...1.0.5) - 2026-05-07
+
+### What's Changed
+
+* Add CI job for No-MCP compatibility by @whoisthisstud in https://github.com/pixelworxio/laravel-ai-action/pull/39
+
+**Full Changelog**: https://github.com/pixelworxio/laravel-ai-action/compare/1.0.4...1.0.5
 
 ## [1.0.4](https://github.com/pixelworxio/laravel-ai-action/compare/1.0.3...1.0.4) - 2026-05-07
 
