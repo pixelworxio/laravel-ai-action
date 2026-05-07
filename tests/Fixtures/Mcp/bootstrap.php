@@ -68,6 +68,20 @@ namespace Laravel\Mcp {
     use Laravel\Mcp\Server\Contracts\Content;
 
     /**
+     * Stub for Laravel\Mcp\Server — mirrors the surface used by AgentActionServer.
+     *
+     * AgentActionServer extends this class, accesses $this->tools[], and calls
+     * parent::boot(). That is the entire surface the stub needs to cover.
+     */
+    abstract class Server
+    {
+        /** @var list<\Laravel\Mcp\Server\Tool> */
+        protected array $tools = [];
+
+        protected function boot(): void {}
+    }
+
+    /**
      * Stub for Laravel\Mcp\Response — mirrors the real public API.
      */
     final class Response

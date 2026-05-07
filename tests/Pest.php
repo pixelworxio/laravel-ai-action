@@ -20,5 +20,12 @@ use Pixelworxio\LaravelAiAction\Tests\TestCase;
 |
 */
 
+// Load MCP stubs before any test file is parsed so that bridge classes whose
+// declarations extend Laravel\Mcp\* (e.g. AgentActionServer extends Server)
+// can be autoloaded safely in the no-MCP CI lane.
+if (! class_exists(\Laravel\Mcp\Server\Tool::class)) {
+    require_once __DIR__.'/Fixtures/Mcp/bootstrap.php';
+}
+
 pest()->extend(TestCase::class)
     ->in('Feature', 'Unit');
