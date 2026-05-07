@@ -6,7 +6,7 @@ use Pixelworxio\LaravelAiAction\DTOs\AgentResult;
 use Pixelworxio\LaravelAiAction\Enums\OutputFormat;
 
 describe('AgentResult', function (): void {
-    function makeTextResult(string $text = 'Hello'): AgentResult
+    function makeAgentResultText(string $text = 'Hello'): AgentResult
     {
         return new AgentResult(
             text: $text,
@@ -20,7 +20,7 @@ describe('AgentResult', function (): void {
         );
     }
 
-    function makeStructuredResult(mixed $structured = ['key' => 'val']): AgentResult
+    function makeAgentResultStructured(mixed $structured = ['key' => 'val']): AgentResult
     {
         return new AgentResult(
             text: '{"key":"val"}',
@@ -36,11 +36,11 @@ describe('AgentResult', function (): void {
 
     describe('isStructured()', function (): void {
         it('returns false for text format', function (): void {
-            expect(makeTextResult()->isStructured())->toBeFalse();
+            expect(makeAgentResultText()->isStructured())->toBeFalse();
         });
 
         it('returns true for structured format', function (): void {
-            expect(makeStructuredResult()->isStructured())->toBeTrue();
+            expect(makeAgentResultStructured()->isStructured())->toBeTrue();
         });
 
         it('returns false for markdown format', function (): void {
@@ -61,7 +61,7 @@ describe('AgentResult', function (): void {
 
     describe('toArray()', function (): void {
         it('contains all expected keys for a text result', function (): void {
-            $array = makeTextResult('Hello world')->toArray();
+            $array = makeAgentResultText('Hello world')->toArray();
 
             expect($array)->toHaveKeys([
                 'text', 'format', 'structured', 'input_tokens',
@@ -77,12 +77,12 @@ describe('AgentResult', function (): void {
         });
 
         it('serializes the format enum name', function (): void {
-            expect(makeStructuredResult()->toArray()['format'])->toBe('Structured');
+            expect(makeAgentResultStructured()->toArray()['format'])->toBe('Structured');
         });
 
         it('includes structured data', function (): void {
             $data = ['items' => [1, 2, 3]];
-            $result = makeStructuredResult($data);
+            $result = makeAgentResultStructured($data);
 
             expect($result->toArray()['structured'])->toBe($data);
         });
@@ -97,7 +97,7 @@ describe('AgentResult', function (): void {
         });
 
         it('exposes all constructor properties publicly', function (): void {
-            $result = makeTextResult('test');
+            $result = makeAgentResultText('test');
 
             expect($result->text)->toBe('test')
                 ->and($result->format)->toBe(OutputFormat::Text)

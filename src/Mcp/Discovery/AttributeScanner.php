@@ -106,7 +106,7 @@ final class AttributeScanner
      */
     private function classFromFile(string $path): ?string
     {
-        $contents = file_get_contents($path);
+        $contents = @file_get_contents($path);
 
         if ($contents === false) {
             return null;

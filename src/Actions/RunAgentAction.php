@@ -8,6 +8,7 @@ use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Illuminate\JsonSchema\Types\Type;
 use Illuminate\Support\Facades\Log;
 use Laravel\Ai\AnonymousAgent;
+use Laravel\Ai\Responses\Data\Usage;
 use Laravel\Ai\Responses\StructuredAgentResponse;
 use Laravel\Ai\Streaming\Events\TextDelta;
 use Laravel\Ai\StructuredAnonymousAgent;
@@ -194,14 +195,14 @@ class RunAgentAction
         }
 
         $fullText = $stream->text ?? '';
-        $usage = $stream->usage;
+        $usage = $stream->usage ?? new Usage;
 
         $result = new AgentResult(
             text: $fullText,
             format: OutputFormat::Text,
             structured: null,
-            inputTokens: $usage->promptTokens ?? 0,
-            outputTokens: $usage->completionTokens ?? 0,
+            inputTokens: $usage->promptTokens,
+            outputTokens: $usage->completionTokens,
             provider: $agent->provider(),
             model: $agent->model(),
             metadata: [],
