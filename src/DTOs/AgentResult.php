@@ -16,14 +16,14 @@ use Pixelworxio\LaravelAiAction\Enums\OutputFormat;
 final readonly class AgentResult
 {
     /**
-     * @param string                $text         The raw text returned by the model.
-     * @param OutputFormat          $format       The format of the output (Text, Structured, Markdown).
-     * @param mixed                 $structured   The mapped structured value, or null for non-structured output.
-     * @param int                   $inputTokens  The number of input (prompt) tokens consumed.
-     * @param int                   $outputTokens The number of output (completion) tokens generated.
-     * @param string                $provider     The provider key used for this invocation.
-     * @param string                $model        The model identifier used for this invocation.
-     * @param array<string, mixed>  $metadata     Additional provider-specific metadata.
+     * @param  string  $text  The raw text returned by the model.
+     * @param  OutputFormat  $format  The format of the output (Text, Structured, Markdown).
+     * @param  mixed  $structured  The mapped structured value, or null for non-structured output.
+     * @param  int  $inputTokens  The number of input (prompt) tokens consumed.
+     * @param  int  $outputTokens  The number of output (completion) tokens generated.
+     * @param  string  $provider  The provider key used for this invocation.
+     * @param  string  $model  The model identifier used for this invocation.
+     * @param  array<string, mixed>  $metadata  Additional provider-specific metadata.
      */
     public function __construct(
         public readonly string $text,

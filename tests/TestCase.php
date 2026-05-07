@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Pixelworxio\LaravelAiAction\Tests;
 
+use Illuminate\Foundation\Application;
+use Illuminate\Support\ServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Pixelworxio\LaravelAiAction\LaravelAiActionServiceProvider;
 
@@ -18,8 +20,6 @@ class TestCase extends Orchestra
 {
     /**
      * Boot the application after all providers have been registered.
-     *
-     * @return void
      */
     protected function setUp(): void
     {
@@ -29,8 +29,8 @@ class TestCase extends Orchestra
     /**
      * Return the package service providers that should be loaded.
      *
-     * @param \Illuminate\Foundation\Application $app The application instance.
-     * @return list<class-string<\Illuminate\Support\ServiceProvider>>
+     * @param  Application  $app  The application instance.
+     * @return list<class-string<ServiceProvider>>
      */
     protected function getPackageProviders($app): array
     {
@@ -42,8 +42,7 @@ class TestCase extends Orchestra
     /**
      * Define the application environment for testing.
      *
-     * @param \Illuminate\Foundation\Application $app The application instance.
-     * @return void
+     * @param  Application  $app  The application instance.
      */
     public function getEnvironmentSetUp($app): void
     {

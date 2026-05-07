@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **MCP Bridge (opt-in)** — expose any `AgentAction` as a Laravel MCP tool with zero changes to the existing action API. Gated behind `AI_ACTION_MCP_ENABLED=true` and a `class_exists(\Laravel\Mcp\Server\Tool::class)` guard; PSR-4 lazy autoload stays cold when the bridge is disabled.
+  - `Pixelworxio\LaravelAiAction\Mcp\Contracts\ExposedAsMcpTool` — interface declaring `mcpName()`, `mcpDescription()`, `mcpInputSchema()`, and `resolveContext()`.
+  - `Pixelworxio\LaravelAiAction\Mcp\Attributes\ExposesAsMcpTool` — PHP attribute for auto-discovery.
+  - `Pixelworxio\LaravelAiAction\Mcp\Concerns\BridgesAgentContextToMcp` — trait providing `resolveRecord()`, `resolveRecords()`, and `metaFromInput()` helpers.
+  - `Pixelworxio\LaravelAiAction\Mcp\AgentActionMcpTool` — adapter extending `Laravel\Mcp\Server\Tool`; forwards annotations from the underlying action class via reflection.
+  - `Pixelworxio\LaravelAiAction\Mcp\AgentResultResponder` — maps `AgentResult` → `Laravel\Mcp\Response` with `_meta` token observability. Defers to `formatMcpResponse()` when the action implements it.
+  - `Pixelworxio\LaravelAiAction\Mcp\Bridge` + `AiActionMcp` facade — collects `Registration` builders and flushes to the MCP facade in a `booted()` callback.
+  - `Pixelworxio\LaravelAiAction\Mcp\Discovery\AttributeScanner` — filesystem scanner for `#[ExposesAsMcpTool]` classes; result cached in production via Laravel's cache layer.
+  - `make:ai-action --mcp` flag — generates a stub already implementing `ExposedAsMcpTool` and using `BridgesAgentContextToMcp`.
+  - `config/ai-action.php` `mcp` block — `enabled`, `discover_in`, `cache_discovery` keys.
+  - `docs/mcp.md` — full worked example, auth scoping guidance, annotation reference, and CI matrix instructions.
 - Laravel 13 support (`laravel/framework: ^12.0 || ^13.0`)
 - `laravel/ai` v0.3 support (`laravel/ai: ^0.1 || ^0.2 || ^0.3`)
 

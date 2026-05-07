@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Pixelworxio\LaravelAiAction\Contracts;
 
+use Laravel\Ai\Contracts\Tool;
+
 /**
  * Indicates that an agent action exposes tools to the AI provider.
  *
@@ -19,7 +21,7 @@ interface HasTools
      * Each element should be a Tool instance as accepted by the Laravel AI SDK
      * (i.e. implementing \Laravel\Ai\Contracts\Tool).
      *
-     * @return array<int, \Laravel\Ai\Contracts\Tool> The tool instances.
+     * @return array<int, Tool> The tool instances.
      */
     public function tools(): array;
 }

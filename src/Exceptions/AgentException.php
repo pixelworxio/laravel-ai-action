@@ -18,18 +18,16 @@ final class AgentException extends RuntimeException
 {
     /**
      * The fully-qualified class name of the agent that raised the exception.
-     *
-     * @var string
      */
     private readonly string $agentClass;
 
     /**
      * Create a new AgentException for the given agent action.
      *
-     * @param AgentAction       $agent   The agent action that failed.
-     * @param string            $message A human-readable description of the failure.
-     * @param int               $code    The exception code.
-     * @param \Throwable|null   $previous The previous exception for chaining.
+     * @param  AgentAction  $agent  The agent action that failed.
+     * @param  string  $message  A human-readable description of the failure.
+     * @param  int  $code  The exception code.
+     * @param  \Throwable|null  $previous  The previous exception for chaining.
      */
     public function __construct(
         AgentAction $agent,
@@ -59,8 +57,8 @@ final class AgentException extends RuntimeException
     /**
      * Create an AgentException from an existing throwable, wrapping it as the cause.
      *
-     * @param AgentAction $agent    The agent action that failed.
-     * @param \Throwable  $cause    The underlying exception.
+     * @param  AgentAction  $agent  The agent action that failed.
+     * @param  \Throwable  $cause  The underlying exception.
      * @return self A new AgentException instance wrapping the cause.
      */
     public static function fromThrowable(AgentAction $agent, \Throwable $cause): self

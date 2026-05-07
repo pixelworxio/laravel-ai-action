@@ -18,15 +18,15 @@ use Pixelworxio\LaravelAiAction\DTOs\AgentContext;
  * ShouldBeUnique to prevent duplicate jobs for the same agent/context pair
  * from accumulating in the queue.
  */
-final class RunAgentActionJob implements ShouldQueue, ShouldBeUnique
+final class RunAgentActionJob implements ShouldBeUnique, ShouldQueue
 {
     use Queueable;
 
     /**
      * Create a new queued agent action job.
      *
-     * @param AgentAction  $agent   The agent action to execute.
-     * @param AgentContext $context The runtime context for the invocation.
+     * @param  AgentAction  $agent  The agent action to execute.
+     * @param  AgentContext  $context  The runtime context for the invocation.
      */
     public function __construct(
         public readonly AgentAction $agent,
@@ -41,8 +41,7 @@ final class RunAgentActionJob implements ShouldQueue, ShouldBeUnique
      * The runner is injected from the service container, allowing it to be
      * swapped with a fake implementation during testing.
      *
-     * @param RunAgentAction $runner The action runner resolved from the container.
-     * @return void
+     * @param  RunAgentAction  $runner  The action runner resolved from the container.
      */
     public function handle(RunAgentAction $runner): void
     {

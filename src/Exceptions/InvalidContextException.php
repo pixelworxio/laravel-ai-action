@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Pixelworxio\LaravelAiAction\Exceptions;
 
-use Pixelworxio\LaravelAiAction\DTOs\AgentContext;
 use InvalidArgumentException;
+use Pixelworxio\LaravelAiAction\DTOs\AgentContext;
 
 /**
  * Thrown when an AgentContext is missing required data for a given agent.
@@ -18,18 +18,16 @@ final class InvalidContextException extends InvalidArgumentException
 {
     /**
      * The context that failed validation.
-     *
-     * @var AgentContext
      */
     private readonly AgentContext $context;
 
     /**
      * Create a new InvalidContextException.
      *
-     * @param AgentContext     $context  The invalid context object.
-     * @param string           $message  A description of why the context is invalid.
-     * @param int              $code     The exception code.
-     * @param \Throwable|null  $previous The previous exception for chaining.
+     * @param  AgentContext  $context  The invalid context object.
+     * @param  string  $message  A description of why the context is invalid.
+     * @param  int  $code  The exception code.
+     * @param  \Throwable|null  $previous  The previous exception for chaining.
      */
     public function __construct(
         AgentContext $context,
@@ -59,7 +57,7 @@ final class InvalidContextException extends InvalidArgumentException
     /**
      * Create an exception indicating a required record is missing from the context.
      *
-     * @param AgentContext $context The context lacking a record.
+     * @param  AgentContext  $context  The context lacking a record.
      * @return self A new InvalidContextException.
      */
     public static function missingRecord(AgentContext $context): self
@@ -73,8 +71,8 @@ final class InvalidContextException extends InvalidArgumentException
     /**
      * Create an exception indicating a required metadata key is absent.
      *
-     * @param AgentContext $context The context missing the metadata key.
-     * @param string       $key     The missing metadata key name.
+     * @param  AgentContext  $context  The context missing the metadata key.
+     * @param  string  $key  The missing metadata key name.
      * @return self A new InvalidContextException.
      */
     public static function missingMeta(AgentContext $context, string $key): self

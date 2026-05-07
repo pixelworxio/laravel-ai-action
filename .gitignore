@@ -29,3 +29,7 @@ Homestead.json
 .phpactor.json
 auth.json
 .idea
+/.phpunit.cache
+
+# Claude Code local settings
+.claude/

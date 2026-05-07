@@ -16,12 +16,12 @@ use Illuminate\Database\Eloquent\Model;
 final readonly class AgentContext
 {
     /**
-     * @param Model|null        $record           The primary Eloquent record for this invocation.
-     * @param array<int, Model> $records           A collection of Eloquent records (batch operations).
-     * @param array<string, mixed> $meta           Arbitrary key/value metadata for prompt building.
-     * @param string|null       $userInstruction   Optional free-text instruction from the end user.
-     * @param string|null       $panelId           Optional Filament panel identifier.
-     * @param string|null       $resourceClass     Optional Filament resource class name.
+     * @param  Model|null  $record  The primary Eloquent record for this invocation.
+     * @param  array<int, Model>  $records  A collection of Eloquent records (batch operations).
+     * @param  array<string, mixed>  $meta  Arbitrary key/value metadata for prompt building.
+     * @param  string|null  $userInstruction  Optional free-text instruction from the end user.
+     * @param  string|null  $panelId  Optional Filament panel identifier.
+     * @param  string|null  $resourceClass  Optional Filament resource class name.
      */
     public function __construct(
         public readonly ?Model $record,
@@ -35,8 +35,8 @@ final readonly class AgentContext
     /**
      * Create a context for a single Eloquent record.
      *
-     * @param Model                $record The primary record.
-     * @param array<string, mixed> $meta   Optional initial metadata.
+     * @param  Model  $record  The primary record.
+     * @param  array<string, mixed>  $meta  Optional initial metadata.
      * @return self A new AgentContext instance.
      */
     public static function fromRecord(Model $record, array $meta = []): self
@@ -54,8 +54,8 @@ final readonly class AgentContext
     /**
      * Create a context for a batch of Eloquent records.
      *
-     * @param array<int, Model>    $records The batch of records.
-     * @param array<string, mixed> $meta    Optional initial metadata.
+     * @param  array<int, Model>  $records  The batch of records.
+     * @param  array<string, mixed>  $meta  Optional initial metadata.
      * @return self A new AgentContext instance.
      */
     public static function fromRecords(array $records, array $meta = []): self
@@ -75,8 +75,8 @@ final readonly class AgentContext
      *
      * The original instance is not modified (immutability is preserved).
      *
-     * @param string $key   The metadata key.
-     * @param mixed  $value The metadata value.
+     * @param  string  $key  The metadata key.
+     * @param  mixed  $value  The metadata value.
      * @return self A new AgentContext instance with the additional metadata.
      */
     public function withMeta(string $key, mixed $value): self

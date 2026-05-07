@@ -19,7 +19,7 @@ interface AgentAction
     /**
      * Return the system-level instructions for the agent.
      *
-     * @param AgentContext $context The runtime context for this invocation.
+     * @param  AgentContext  $context  The runtime context for this invocation.
      * @return string The system prompt / instructions string.
      */
     public function instructions(AgentContext $context): string;
@@ -27,7 +27,7 @@ interface AgentAction
     /**
      * Return the user-facing prompt for the agent.
      *
-     * @param AgentContext $context The runtime context for this invocation.
+     * @param  AgentContext  $context  The runtime context for this invocation.
      * @return string The user prompt string.
      */
     public function prompt(AgentContext $context): string;
@@ -49,7 +49,7 @@ interface AgentAction
     /**
      * Execute the agent action and return a structured result.
      *
-     * @param AgentContext $context The runtime context for this invocation.
+     * @param  AgentContext  $context  The runtime context for this invocation.
      * @return AgentResult The typed result wrapping the AI response.
      */
     public function handle(AgentContext $context): AgentResult;

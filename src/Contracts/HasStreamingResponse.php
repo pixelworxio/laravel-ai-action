@@ -20,7 +20,7 @@ interface HasStreamingResponse
      *
      * Return true to continue consuming the stream, or false to halt early.
      *
-     * @param string $chunk A single text delta chunk from the stream.
+     * @param  string  $chunk  A single text delta chunk from the stream.
      * @return bool Whether to continue processing subsequent chunks.
      */
     public function onChunk(string $chunk): bool;
@@ -32,8 +32,7 @@ interface HasStreamingResponse
      * via onChunk returning false). The final AgentResult contains the full
      * concatenated text and usage metadata.
      *
-     * @param AgentResult $result The completed agent result.
-     * @return void
+     * @param  AgentResult  $result  The completed agent result.
      */
     public function onComplete(AgentResult $result): void;
 }

@@ -4,12 +4,9 @@ declare(strict_types=1);
 
 use Pixelworxio\LaravelAiAction\Actions\RunAgentAction;
 use Pixelworxio\LaravelAiAction\Contracts\AgentAction;
-use Pixelworxio\LaravelAiAction\Contracts\HasStreamingResponse;
 use Pixelworxio\LaravelAiAction\Contracts\HasStructuredOutput;
 use Pixelworxio\LaravelAiAction\DTOs\AgentContext;
 use Pixelworxio\LaravelAiAction\DTOs\AgentResult;
-use Pixelworxio\LaravelAiAction\Enums\OutputFormat;
-use Pixelworxio\LaravelAiAction\Exceptions\AgentException;
 use Pixelworxio\LaravelAiAction\Testing\AgentActionAssertions;
 use Pixelworxio\LaravelAiAction\Testing\FakeAgentAction;
 
@@ -31,7 +28,8 @@ function makeContext(): AgentContext
  */
 function makeTextAgent(string $agentClass = 'TestTextAgent'): AgentAction
 {
-    return new class ($agentClass) implements AgentAction {
+    return new class($agentClass) implements AgentAction
+    {
         public function __construct(private readonly string $agentClass) {}
 
         public function instructions(AgentContext $context): string
@@ -87,11 +85,28 @@ describe('RunAgentAction with FakeAgentAction', function (): void {
     });
 
     it('returns a pre-registered fake text result', function (): void {
-        $agent = new class implements AgentAction {
-            public function instructions(AgentContext $context): string { return ''; }
-            public function prompt(AgentContext $context): string { return ''; }
-            public function provider(): string { return 'anthropic'; }
-            public function model(): string { return 'claude-sonnet-4-20250514'; }
+        $agent = new class implements AgentAction
+        {
+            public function instructions(AgentContext $context): string
+            {
+                return '';
+            }
+
+            public function prompt(AgentContext $context): string
+            {
+                return '';
+            }
+
+            public function provider(): string
+            {
+                return 'anthropic';
+            }
+
+            public function model(): string
+            {
+                return 'claude-sonnet-4-20250514';
+            }
+
             public function handle(AgentContext $context): AgentResult
             {
                 return app(RunAgentAction::class)->execute($this, $context);
@@ -100,7 +115,7 @@ describe('RunAgentAction with FakeAgentAction', function (): void {
 
         FakeAgentAction::fakeResponse($agent::class, 'Hello from fake');
 
-        $result = (new FakeAgentAction())->execute($agent, makeContext());
+        $result = (new FakeAgentAction)->execute($agent, makeContext());
 
         AgentActionAssertions::for($result)
             ->assertText('Hello from fake')
@@ -112,11 +127,28 @@ describe('RunAgentAction with FakeAgentAction', function (): void {
     });
 
     it('records the call and allows assertAgentCalled()', function (): void {
-        $agent = new class implements AgentAction {
-            public function instructions(AgentContext $context): string { return ''; }
-            public function prompt(AgentContext $context): string { return ''; }
-            public function provider(): string { return 'anthropic'; }
-            public function model(): string { return 'claude-sonnet-4-20250514'; }
+        $agent = new class implements AgentAction
+        {
+            public function instructions(AgentContext $context): string
+            {
+                return '';
+            }
+
+            public function prompt(AgentContext $context): string
+            {
+                return '';
+            }
+
+            public function provider(): string
+            {
+                return 'anthropic';
+            }
+
+            public function model(): string
+            {
+                return 'claude-sonnet-4-20250514';
+            }
+
             public function handle(AgentContext $context): AgentResult
             {
                 return app(RunAgentAction::class)->execute($this, $context);
@@ -125,7 +157,7 @@ describe('RunAgentAction with FakeAgentAction', function (): void {
 
         FakeAgentAction::fakeResponse($agent::class, 'response');
 
-        $fake = new FakeAgentAction();
+        $fake = new FakeAgentAction;
         $fake->execute($agent, makeContext());
         $fake->execute($agent, makeContext());
 
@@ -137,13 +169,38 @@ describe('RunAgentAction with FakeAgentAction', function (): void {
     });
 
     it('returns a structured result when structured payload is registered', function (): void {
-        $agent = new class implements AgentAction, HasStructuredOutput {
-            public function instructions(AgentContext $context): string { return ''; }
-            public function prompt(AgentContext $context): string { return ''; }
-            public function provider(): string { return 'anthropic'; }
-            public function model(): string { return 'claude-sonnet-4-20250514'; }
-            public function outputSchema(): array { return ['type' => 'object']; }
-            public function mapOutput(array $raw): mixed { return $raw; }
+        $agent = new class implements AgentAction, HasStructuredOutput
+        {
+            public function instructions(AgentContext $context): string
+            {
+                return '';
+            }
+
+            public function prompt(AgentContext $context): string
+            {
+                return '';
+            }
+
+            public function provider(): string
+            {
+                return 'anthropic';
+            }
+
+            public function model(): string
+            {
+                return 'claude-sonnet-4-20250514';
+            }
+
+            public function outputSchema(): array
+            {
+                return ['type' => 'object'];
+            }
+
+            public function mapOutput(array $raw): mixed
+            {
+                return $raw;
+            }
+
             public function handle(AgentContext $context): AgentResult
             {
                 return app(RunAgentAction::class)->execute($this, $context);
@@ -153,7 +210,7 @@ describe('RunAgentAction with FakeAgentAction', function (): void {
         $structured = ['name' => 'Test', 'value' => 42];
         FakeAgentAction::fakeResponse($agent::class, '{"name":"Test","value":42}', $structured);
 
-        $fake = new FakeAgentAction();
+        $fake = new FakeAgentAction;
         $result = $fake->execute($agent, makeContext());
 
         AgentActionAssertions::for($result)
@@ -162,11 +219,28 @@ describe('RunAgentAction with FakeAgentAction', function (): void {
     });
 
     it('reset() clears all registered responses and call records', function (): void {
-        $agent = new class implements AgentAction {
-            public function instructions(AgentContext $context): string { return ''; }
-            public function prompt(AgentContext $context): string { return ''; }
-            public function provider(): string { return 'anthropic'; }
-            public function model(): string { return 'claude-sonnet-4-20250514'; }
+        $agent = new class implements AgentAction
+        {
+            public function instructions(AgentContext $context): string
+            {
+                return '';
+            }
+
+            public function prompt(AgentContext $context): string
+            {
+                return '';
+            }
+
+            public function provider(): string
+            {
+                return 'anthropic';
+            }
+
+            public function model(): string
+            {
+                return 'claude-sonnet-4-20250514';
+            }
+
             public function handle(AgentContext $context): AgentResult
             {
                 return app(RunAgentAction::class)->execute($this, $context);
@@ -174,7 +248,7 @@ describe('RunAgentAction with FakeAgentAction', function (): void {
         };
 
         FakeAgentAction::fakeResponse($agent::class, 'text');
-        $fake = new FakeAgentAction();
+        $fake = new FakeAgentAction;
         $fake->execute($agent, makeContext());
 
         FakeAgentAction::reset();
@@ -183,18 +257,35 @@ describe('RunAgentAction with FakeAgentAction', function (): void {
     });
 
     it('returns an empty-text result when no fake is registered for the agent', function (): void {
-        $agent = new class implements AgentAction {
-            public function instructions(AgentContext $context): string { return ''; }
-            public function prompt(AgentContext $context): string { return ''; }
-            public function provider(): string { return 'anthropic'; }
-            public function model(): string { return 'claude-sonnet-4-20250514'; }
+        $agent = new class implements AgentAction
+        {
+            public function instructions(AgentContext $context): string
+            {
+                return '';
+            }
+
+            public function prompt(AgentContext $context): string
+            {
+                return '';
+            }
+
+            public function provider(): string
+            {
+                return 'anthropic';
+            }
+
+            public function model(): string
+            {
+                return 'claude-sonnet-4-20250514';
+            }
+
             public function handle(AgentContext $context): AgentResult
             {
                 return app(RunAgentAction::class)->execute($this, $context);
             }
         };
 
-        $fake = new FakeAgentAction();
+        $fake = new FakeAgentAction;
         $result = $fake->execute($agent, makeContext());
 
         expect($result->text)->toBe('');

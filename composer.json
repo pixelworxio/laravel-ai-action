@@ -1,7 +1,7 @@
 {
     "name": "pixelworxio/laravel-ai-action",
     "description": "AI-powered actions for Laravel — a clean integration layer built on laravel/ai",
-    "keywords": ["Laravel", "AI", "actions"],
+    "keywords": ["Laravel", "AI", "actions", "mcp"],
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -17,7 +17,11 @@
         "laravel/ai": "^0.1 || ^0.2 || ^0.3 || ^0.4 || ^0.5 || ^0.6",
         "spatie/laravel-package-tools": "^1.16"
     },
+    "suggest": {
+        "laravel/mcp": "Required to expose agent actions as MCP tools (>=0.1)."
+    },
     "require-dev": {
+        "laravel/mcp": ">=0.1",
         "pestphp/pest": "^4.0",
         "pestphp/pest-plugin-laravel": "^4.0",
         "pestphp/pest-plugin-arch": "^4.0",
