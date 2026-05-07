@@ -1,0 +1,127 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{ namespace }};
+
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\JsonSchema\JsonSchema;
+use Laravel\Mcp\Server\Tools\Annotations\IsReadOnly;
+use Pixelworxio\LaravelAiAction\Actions\RunAgentAction;
+use Pixelworxio\LaravelAiAction\Concerns\InteractsWithAgent;
+use Pixelworxio\LaravelAiAction\Contracts\AgentAction;
+use Pixelworxio\LaravelAiAction\DTOs\AgentContext;
+use Pixelworxio\LaravelAiAction\DTOs\AgentResult;
+use Pixelworxio\LaravelAiAction\Mcp\Attributes\ExposesAsMcpTool;
+use Pixelworxio\LaravelAiAction\Mcp\Concerns\BridgesAgentContextToMcp;
+use Pixelworxio\LaravelAiAction\Mcp\Contracts\ExposedAsMcpTool;
+
+#[ExposesAsMcpTool]
+#[IsReadOnly]
+final class {{ class }} implements AgentAction, ExposedAsMcpTool
+{
+    use InteractsWithAgent;
+    use BridgesAgentContextToMcp;
+
+    /**
+     * Return the system-level instructions for this agent.
+     *
+     * @param AgentContext $context The runtime context for this invocation.
+     * @return string The system prompt / instructions string.
+     */
+    public function instructions(AgentContext $context): string
+    {
+        return '';
+    }
+
+    /**
+     * Return the user-facing prompt for this agent.
+     *
+     * @param AgentContext $context The runtime context for this invocation.
+     * @return string The user prompt string.
+     */
+    public function prompt(AgentContext $context): string
+    {
+        return '';
+    }
+
+    /**
+     * Execute the agent action and return a typed AgentResult.
+     *
+     * @param AgentContext $context The runtime context for this invocation.
+     * @return AgentResult The typed result wrapping the AI response.
+     */
+    public function handle(AgentContext $context): AgentResult
+    {
+        return app(RunAgentAction::class)->execute($this, $context);
+    }
+
+    // -------------------------------------------------------------------------
+    // MCP surface — ExposedAsMcpTool
+    // -------------------------------------------------------------------------
+
+    /**
+     * Return the MCP tool name (snake_case, unique across all registered tools).
+     *
+     * @return string
+     */
+    public function mcpName(): string
+    {
+        return '{{ mcp_name }}';
+    }
+
+    /**
+     * Return a one-line description for the LLM client.
+     *
+     * @return string
+     */
+    public function mcpDescription(): string
+    {
+        return '';
+    }
+
+    /**
+     * Declare the MCP input schema.
+     *
+     * Describe every property the LLM must supply to call this tool.
+     * Use $schema->integer(), $schema->string(), etc.
+     *
+     * Example:
+     *   return [
+     *       'record_id' => $schema->integer()->required()->description('Primary key.'),
+     *   ];
+     *
+     * @param  JsonSchema  $schema  The Illuminate JsonSchema factory.
+     * @return array<string, \Illuminate\JsonSchema\Types\Type>
+     */
+    public function mcpInputSchema(JsonSchema $schema): array
+    {
+        return [];
+    }
+
+    /**
+     * Translate validated MCP input into an AgentContext.
+     *
+     * Resolve Eloquent records, apply auth scoping, and stamp any metadata
+     * needed by instructions() and prompt() here.
+     *
+     * Example:
+     *   $record = $this->resolveRecord(MyModel::class, $input['record_id'], $user);
+     *   return AgentContext::fromRecord($record);
+     *
+     * @param  array<string, mixed>  $input  The validated input from the MCP request.
+     * @param  Authenticatable|null  $user   The authenticated caller, or null.
+     * @return AgentContext
+     */
+    public function resolveContext(array $input, ?Authenticatable $user): AgentContext
+    {
+        return new AgentContext(
+            record: null,
+            records: [],
+            meta: $input,
+            userInstruction: null,
+            panelId: null,
+            resourceClass: null,
+        );
+    }
+}

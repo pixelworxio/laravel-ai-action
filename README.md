@@ -89,6 +89,33 @@ echo $result->inputTokens;  // 320
 
 ---
 
+## MCP Bridge (opt-in)
+
+Expose any `AgentAction` as a [Laravel MCP](https://laravel.com/docs/13.x/mcp) tool — reachable from Claude Desktop, Cursor, and any MCP-aware client — with a few additional methods and one env flag.
+
+```bash
+composer require laravel/mcp
+```
+
+```env
+AI_ACTION_MCP_ENABLED=true
+```
+
+```bash
+php artisan make:ai-action SummarizeInvoice --mcp
+```
+
+```php
+// In your AppServiceProvider::boot():
+use Pixelworxio\LaravelAiAction\Mcp\Facades\AiActionMcp;
+
+AiActionMcp::tool(\App\Ai\Actions\SummarizeInvoice::class);
+```
+
+See [**docs/mcp.md**](docs/mcp.md) for the full guide including auth scoping, annotation forwarding, auto-discovery, and custom response formatting.
+
+---
+
 ## Documentation
 
 - [**Actions**](docs/actions.md) — creating actions, contracts, and execution modes
@@ -97,6 +124,7 @@ echo $result->inputTokens;  // 320
 - [**Testing**](docs/testing.md) — `FakeAgentAction` and fluent assertions
 - [**Configuration**](docs/configuration.md) — all config keys and environment variables
 - [**Queue**](docs/queue.md) — background execution with `RunAgentActionJob`
+- [**MCP Bridge**](docs/mcp.md) — exposing actions as MCP tools (opt-in)
 
 ---
 

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use Illuminate\Database\Eloquent\Model;
 use Pixelworxio\LaravelAiAction\DTOs\AgentContext;
-use Pixelworxio\LaravelAiAction\Exceptions\InvalidContextException;
 
 describe('AgentContext', function (): void {
     describe('fromRecord()', function (): void {

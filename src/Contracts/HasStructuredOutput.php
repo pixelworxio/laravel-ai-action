@@ -30,7 +30,7 @@ interface HasStructuredOutput
      * provider's structured response and should return whatever shape your
      * application expects (a DTO, a collection, a primitive, etc.).
      *
-     * @param array<string, mixed> $raw The decoded structured output.
+     * @param  array<string, mixed>  $raw  The decoded structured output.
      * @return mixed The mapped output value.
      */
     public function mapOutput(array $raw): mixed;

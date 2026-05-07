@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Pixelworxio\LaravelAiAction\Testing;
 
 use Illuminate\Support\Facades\App;
+use PHPUnit\Framework\Assert as PHPUnit;
 use Pixelworxio\LaravelAiAction\Actions\RunAgentAction;
 use Pixelworxio\LaravelAiAction\Contracts\AgentAction;
 use Pixelworxio\LaravelAiAction\DTOs\AgentContext;
 use Pixelworxio\LaravelAiAction\DTOs\AgentResult;
 use Pixelworxio\LaravelAiAction\Enums\OutputFormat;
-use PHPUnit\Framework\Assert as PHPUnit;
 
 /**
  * Test double that replaces RunAgentAction in the service container.
@@ -47,28 +47,26 @@ final class FakeAgentAction extends RunAgentAction
      * Binds this fake as the RunAgentAction singleton in the container so that
      * no real API calls are ever made during tests.
      *
-     * @param class-string $agentClass The fully-qualified agent class name.
-     * @param string       $text       The fake text response.
-     * @param mixed        $structured Optional structured value (for HasStructuredOutput agents).
-     * @return void
+     * @param  class-string  $agentClass  The fully-qualified agent class name.
+     * @param  string  $text  The fake text response.
+     * @param  mixed  $structured  Optional structured value (for HasStructuredOutput agents).
      */
     public static function fakeResponse(string $agentClass, string $text, mixed $structured = null): void
     {
-        static::$fakeResponses[$agentClass] = ['text' => $text, 'structured' => $structured];
+        self::$fakeResponses[$agentClass] = ['text' => $text, 'structured' => $structured];
 
-        App::instance(RunAgentAction::class, new self());
+        App::instance(RunAgentAction::class, new self);
     }
 
     /**
      * Assert that the given agent was invoked at least $times times.
      *
-     * @param class-string $agentClass The fully-qualified agent class name.
-     * @param int          $times      Expected minimum number of calls.
-     * @return void
+     * @param  class-string  $agentClass  The fully-qualified agent class name.
+     * @param  int  $times  Expected minimum number of calls.
      */
     public static function assertAgentCalled(string $agentClass, int $times = 1): void
     {
-        $actual = count(static::$calls[$agentClass] ?? []);
+        $actual = count(self::$calls[$agentClass] ?? []);
 
         PHPUnit::assertSame(
             $times,
@@ -85,12 +83,11 @@ final class FakeAgentAction extends RunAgentAction
     /**
      * Assert that the given agent was never invoked.
      *
-     * @param class-string $agentClass The fully-qualified agent class name.
-     * @return void
+     * @param  class-string  $agentClass  The fully-qualified agent class name.
      */
     public static function assertAgentNotCalled(string $agentClass): void
     {
-        $actual = count(static::$calls[$agentClass] ?? []);
+        $actual = count(self::$calls[$agentClass] ?? []);
 
         PHPUnit::assertSame(
             0,
@@ -107,13 +104,11 @@ final class FakeAgentAction extends RunAgentAction
      * Clear all registered fake responses and call records.
      *
      * Call this in setUp() or tearDown() to ensure test isolation.
-     *
-     * @return void
      */
     public static function reset(): void
     {
-        static::$fakeResponses = [];
-        static::$calls = [];
+        self::$fakeResponses = [];
+        self::$calls = [];
     }
 
     /**
@@ -122,17 +117,17 @@ final class FakeAgentAction extends RunAgentAction
      * If no fake has been registered for the agent class an AgentResult with
      * empty text is returned so tests never reach the real AI provider.
      *
-     * @param AgentAction  $agent   The agent action being executed.
-     * @param AgentContext $context The runtime context for the invocation.
+     * @param  AgentAction  $agent  The agent action being executed.
+     * @param  AgentContext  $context  The runtime context for the invocation.
      * @return AgentResult The pre-registered fake result.
      */
     public function execute(AgentAction $agent, AgentContext $context): AgentResult
     {
         $class = $agent::class;
 
-        static::$calls[$class][] = $context;
+        self::$calls[$class][] = $context;
 
-        $registered = static::$fakeResponses[$class] ?? ['text' => '', 'structured' => null];
+        $registered = self::$fakeResponses[$class] ?? ['text' => '', 'structured' => null];
 
         $format = $registered['structured'] !== null
             ? OutputFormat::Structured

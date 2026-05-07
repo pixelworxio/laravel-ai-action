@@ -9,13 +9,16 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
 /**
- * Artisan command that generates a new AI agent action class from the agent stub.
+ * Artisan command that generates a new AI agent action class from a stub.
  *
  * Usage:
  *   php artisan make:ai-action MyAction
+ *   php artisan make:ai-action MyAction --mcp
  *
- * The generated file is placed at app/Ai/Actions/{Name}.php and implements
- * AgentAction using the InteractsWithAgent trait for sensible defaults.
+ * The generated file is placed at app/Ai/Actions/{Name}.php. The base stub
+ * implements AgentAction with the InteractsWithAgent trait for sensible defaults.
+ * The --mcp flag emits an extended stub that also implements ExposedAsMcpTool
+ * and includes the BridgesAgentContextToMcp trait.
  */
 final class MakeAiActionCommand extends Command
 {
@@ -24,7 +27,9 @@ final class MakeAiActionCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'make:ai-action {name : The name of the action class to generate}';
+    protected $signature = 'make:ai-action
+        {name : The name of the action class to generate}
+        {--mcp : Also implement ExposedAsMcpTool for MCP bridge support}';
 
     /**
      * The console command description.
@@ -36,23 +41,24 @@ final class MakeAiActionCommand extends Command
     /**
      * Execute the console command.
      *
-     * Reads the agent stub, replaces placeholders, and writes the generated
-     * class to app/Ai/Agents/{Name}.php. Reports success or failure to the
-     * console output.
+     * Reads the appropriate stub (base or MCP-extended), replaces placeholders,
+     * and writes the generated class to app/Ai/Actions/{Name}.php.
      *
-     * @param Filesystem $files The filesystem instance for reading/writing files.
+     * @param  Filesystem  $files  The filesystem instance for reading/writing files.
      * @return int The command exit code (0 = success, 1 = failure).
      */
     public function handle(Filesystem $files): int
     {
         $name = $this->argument('name');
+
         if (! is_string($name)) {
             $this->components->error('The name argument must be a string.');
 
             return self::FAILURE;
         }
+
         $className = Str::studly($name);
-        $targetPath = app_path('Ai/Actions/' . $className . '.php');
+        $targetPath = app_path('Ai/Actions/'.$className.'.php');
 
         if ($files->exists($targetPath)) {
             $this->components->error("Action [{$className}] already exists.");
@@ -60,7 +66,8 @@ final class MakeAiActionCommand extends Command
             return self::FAILURE;
         }
 
-        $stubPath = $this->resolveStubPath();
+        $withMcp = (bool) $this->option('mcp');
+        $stubPath = $this->resolveStubPath($withMcp);
 
         if (! $files->exists($stubPath)) {
             $this->components->error("Stub file not found at [{$stubPath}].");
@@ -69,11 +76,12 @@ final class MakeAiActionCommand extends Command
         }
 
         $stub = $files->get($stubPath);
-        $namespace = $this->rootNamespace() . 'Ai\\Actions';
+        $namespace = $this->rootNamespace().'Ai\\Actions';
+        $mcpName = Str::snake($className);
 
         $contents = str_replace(
-            ['{{ namespace }}', '{{ class }}'],
-            [$namespace, $className],
+            ['{{ namespace }}', '{{ class }}', '{{ mcp_name }}'],
+            [$namespace, $className, $mcpName],
             $stub,
         );
 
@@ -88,26 +96,33 @@ final class MakeAiActionCommand extends Command
         $this->components->info("Action [{$className}] created successfully.");
         $this->components->twoColumnDetail('Path', $targetPath);
 
+        if ($withMcp) {
+            $this->components->twoColumnDetail('MCP tool name', $mcpName);
+        }
+
         return self::SUCCESS;
     }
 
     /**
-     * Resolve the path to the agent stub file.
+     * Resolve the path to the stub file.
      *
-     * The stub is resolved from a published stub in the project root first,
-     * falling back to the package's bundled stub.
+     * Resolution order:
+     *  1. Published stub in the project root (stubs/ai-action[-mcp].stub).
+     *  2. Package bundled stub.
      *
+     * @param  bool  $mcp  Whether the MCP-extended stub is requested.
      * @return string The absolute path to the stub file.
      */
-    private function resolveStubPath(): string
+    private function resolveStubPath(bool $mcp): string
     {
-        $published = base_path('stubs/ai-action.stub');
+        $stubName = $mcp ? 'ai-action-mcp.stub' : 'ai-action.stub';
+        $published = base_path("stubs/{$stubName}");
 
         if (file_exists($published)) {
             return $published;
         }
 
-        return dirname(__DIR__, 2) . '/stubs/ai-action.stub';
+        return dirname(__DIR__, 2)."/stubs/{$stubName}";
     }
 
     /**

@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Queue;
 use Pixelworxio\LaravelAiAction\Actions\RunAgentAction;
 use Pixelworxio\LaravelAiAction\Actions\RunAgentActionJob;
@@ -21,7 +23,8 @@ beforeEach(function (): void {
 
 function makeJobAgent(): AgentAction
 {
-    return new class implements AgentAction {
+    return new class implements AgentAction
+    {
         public function instructions(AgentContext $context): string
         {
             return 'You are an assistant.';
@@ -57,8 +60,8 @@ describe('RunAgentActionJob', function (): void {
     it('implements ShouldQueue and ShouldBeUnique', function (): void {
         $reflection = new ReflectionClass(RunAgentActionJob::class);
 
-        expect($reflection->implementsInterface(\Illuminate\Contracts\Queue\ShouldQueue::class))->toBeTrue()
-            ->and($reflection->implementsInterface(\Illuminate\Contracts\Queue\ShouldBeUnique::class))->toBeTrue();
+        expect($reflection->implementsInterface(ShouldQueue::class))->toBeTrue()
+            ->and($reflection->implementsInterface(ShouldBeUnique::class))->toBeTrue();
     });
 
     it('can be dispatched to the queue', function (): void {
@@ -108,7 +111,7 @@ describe('RunAgentActionJob', function (): void {
 
         FakeAgentAction::fakeResponse($agent::class, 'Job result');
 
-        $fake = new FakeAgentAction();
+        $fake = new FakeAgentAction;
         $job = new RunAgentActionJob($agent, $context);
         $job->handle($fake);
 
