@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 use Laravel\Mcp\Server\Tool;
 use Pixelworxio\LaravelAiAction\Mcp\Discovery\AttributeScanner;
+use Pixelworxio\LaravelAiAction\Tests\Fixtures\Mcp\Actions\NonQualifying\AbstractAction;
+use Pixelworxio\LaravelAiAction\Tests\Fixtures\Mcp\Actions\NonQualifying\NotAnAction;
+use Pixelworxio\LaravelAiAction\Tests\Fixtures\Mcp\Actions\NonQualifying\NotExposed;
 use Pixelworxio\LaravelAiAction\Tests\Fixtures\Mcp\Actions\StubMcpAction;
 use Pixelworxio\LaravelAiAction\Tests\McpTestCase;
 
@@ -68,5 +71,92 @@ describe('AttributeScanner', function (): void {
         $second = $this->scanner->scan([$this->fixturesPath]);
 
         expect($first)->toEqual($second);
+    });
+
+    it('skips PHP files that have no class definition', function (): void {
+        config(['ai-action.mcp.cache_discovery' => false]);
+
+        $nonQualifyingPath = $this->fixturesPath.'/NonQualifying';
+
+        // The no_class.php file is in this directory; no exception should be raised.
+        $discovered = $this->scanner->scan([$nonQualifyingPath]);
+
+        $classNames = array_map(fn ($class) => basename(str_replace('\\', '/', $class)), $discovered);
+        expect($classNames)->not->toContain('');
+    });
+
+    it('does not discover classes that only implement AgentAction (not ExposedAsMcpTool)', function (): void {
+        config(['ai-action.mcp.cache_discovery' => false]);
+
+        $nonQualifyingPath = $this->fixturesPath.'/NonQualifying';
+
+        // Ensure fixture classes are autoloaded for reflection
+        class_exists(NotExposed::class);
+
+        $discovered = $this->scanner->scan([$nonQualifyingPath]);
+
+        expect($discovered)->not->toContain(
+            NotExposed::class
+        );
+    });
+
+    it('does not discover classes that only implement ExposedAsMcpTool (not AgentAction)', function (): void {
+        config(['ai-action.mcp.cache_discovery' => false]);
+
+        $nonQualifyingPath = $this->fixturesPath.'/NonQualifying';
+
+        class_exists(NotAnAction::class);
+
+        $discovered = $this->scanner->scan([$nonQualifyingPath]);
+
+        expect($discovered)->not->toContain(
+            NotAnAction::class
+        );
+    });
+
+    it('does not discover abstract classes carrying the attribute', function (): void {
+        config(['ai-action.mcp.cache_discovery' => false]);
+
+        $nonQualifyingPath = $this->fixturesPath.'/NonQualifying';
+
+        class_exists(AbstractAction::class);
+
+        $discovered = $this->scanner->scan([$nonQualifyingPath]);
+
+        expect($discovered)->not->toContain(
+            AbstractAction::class
+        );
+    });
+
+    it('returns null and skips files that cannot be read (file_get_contents returns false)', function (): void {
+        config(['ai-action.mcp.cache_discovery' => false]);
+
+        $tmpDir = sys_get_temp_dir().'/scanner_test_'.uniqid();
+        mkdir($tmpDir, 0755);
+
+        $unreadable = $tmpDir.'/unreadable.php';
+        file_put_contents($unreadable, '<?php class UnreadableFixtureClass {}');
+        chmod($unreadable, 0000);
+
+        try {
+            $discovered = $this->scanner->scan([$tmpDir]);
+            expect($discovered)->not->toContain('UnreadableFixtureClass');
+        } finally {
+            chmod($unreadable, 0644);
+            unlink($unreadable);
+            rmdir($tmpDir);
+        }
+    });
+
+    it('silently skips PHP files whose class cannot be autoloaded', function (): void {
+        config(['ai-action.mcp.cache_discovery' => false]);
+
+        $nonQualifyingPath = $this->fixturesPath.'/NonQualifying';
+
+        // UnloadableClass.php declares a class under Some\Totally\Unloadable\Namespace which
+        // is not in the PSR-4 map, so class_exists() returns false inside qualifies().
+        $discovered = $this->scanner->scan([$nonQualifyingPath]);
+
+        expect($discovered)->not->toContain('Some\\Totally\\Unloadable\\Namespace\\UnloadableClass');
     });
 });
