@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/pixelworxio/laravel-ai-action/compare/1.0.3...HEAD)
+## [Unreleased](https://github.com/pixelworxio/laravel-ai-action/compare/1.0.4...HEAD)
 
 ### Added
 
@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `make:ai-action --mcp` flag — generates a stub already implementing `ExposedAsMcpTool` and using `BridgesAgentContextToMcp`.
   - `config/ai-action.php` `mcp` block — `enabled`, `discover_in`, `cache_discovery` keys.
   - `docs/mcp.md` — full worked example, auth scoping guidance, annotation reference, and CI matrix instructions.
+  
 - Laravel 13 support (`laravel/framework: ^12.0 || ^13.0`)
 - `laravel/ai` v0.3 support (`laravel/ai: ^0.1 || ^0.2 || ^0.3`)
 
@@ -47,6 +48,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`LaravelAiActionServiceProvider`** — Spatie `PackageServiceProvider` that registers the `ai-action` config file, binds `RunAgentAction` as a singleton, and registers the `make:ai-action` Artisan command.
 - **`make:ai-action` Artisan command** — generates `app/Ai/Actions/{Name}.php` from `stubs/action.stub`, resolving the published stub first and falling back to the package bundled stub.
 - **`config/ai-action.php`** — package configuration exposing `provider`, `model`, `queue`, `max_tokens`, and `logging` keys, each overridable via environment variables.
+
+## [1.0.4](https://github.com/pixelworxio/laravel-ai-action/compare/1.0.3...1.0.4) - 2026-05-07
+
+### What's Changed
+
+* chore(deps): bump laravel/framework from 13.6.0 to 13.7.0 by @dependabot[bot] in https://github.com/pixelworxio/laravel-ai-action/pull/35
+* chore(deps): bump laravel/ai from 0.6.3 to 0.6.6 by @dependabot[bot] in https://github.com/pixelworxio/laravel-ai-action/pull/36
+* Add Opt-in MCP Bridge by @whoisthisstud in https://github.com/pixelworxio/laravel-ai-action/pull/37
+* Add MCP & agent action tests (99.1% coverage); minor fixes by @whoisthisstud in https://github.com/pixelworxio/laravel-ai-action/pull/38
+
+**Full Changelog**: https://github.com/pixelworxio/laravel-ai-action/compare/1.0.3...1.0.4
 
 ## [1.0.3](https://github.com/pixelworxio/laravel-ai-action/compare/1.0.2...1.0.3) - 2026-04-26
 
