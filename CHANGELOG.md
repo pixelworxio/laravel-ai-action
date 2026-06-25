@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/pixelworxio/laravel-ai-action/compare/1.0.5...HEAD)
+## [Unreleased](https://github.com/pixelworxio/laravel-ai-action/compare/1.0.6...HEAD)
 
 ### Added
 
@@ -51,6 +51,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`LaravelAiActionServiceProvider`** — Spatie `PackageServiceProvider` that registers the `ai-action` config file, binds `RunAgentAction` as a singleton, and registers the `make:ai-action` Artisan command.
 - **`make:ai-action` Artisan command** — generates `app/Ai/Actions/{Name}.php` from `stubs/action.stub`, resolving the published stub first and falling back to the package bundled stub.
 - **`config/ai-action.php`** — package configuration exposing `provider`, `model`, `queue`, `max_tokens`, and `logging` keys, each overridable via environment variables.
+
+## [1.0.6](https://github.com/pixelworxio/laravel-ai-action/compare/1.0.5...1.0.6) - 2026-06-25
+
+### What's Changed
+
+* chore(deps-dev): bump pestphp/pest from 4.6.3 to 4.7.0 by @dependabot[bot] in https://github.com/pixelworxio/laravel-ai-action/pull/40
+* chore(deps): bump laravel/ai from 0.6.6 to 0.6.7 by @dependabot[bot] in https://github.com/pixelworxio/laravel-ai-action/pull/41
+* chore(deps): bump laravel/framework from 13.7.0 to 13.8.0 by @dependabot[bot] in https://github.com/pixelworxio/laravel-ai-action/pull/42
+* chore(deps): bump laravel/ai from 0.6.7 to 0.6.8 by @dependabot[bot] in https://github.com/pixelworxio/laravel-ai-action/pull/43
+* chore(deps): bump laravel/framework from 13.8.0 to 13.9.0 by @dependabot[bot] in https://github.com/pixelworxio/laravel-ai-action/pull/44
+* chore(deps): bump laravel/framework from 13.9.0 to 13.11.2 by @dependabot[bot] in https://github.com/pixelworxio/laravel-ai-action/pull/45
+* chore(deps): bump spatie/laravel-package-tools from 1.93.0 to 1.93.1 by @dependabot[bot] in https://github.com/pixelworxio/laravel-ai-action/pull/46
+* chore(deps): bump laravel/ai from 0.6.8 to 0.7.0 by @dependabot[bot] in https://github.com/pixelworxio/laravel-ai-action/pull/47
+* chore(deps-dev): bump laravel/mcp from 0.7.0 to 0.7.1 by @dependabot[bot] in https://github.com/pixelworxio/laravel-ai-action/pull/48
+* chore(deps): bump laravel/framework from 13.11.2 to 13.12.0 by @dependabot[bot] in https://github.com/pixelworxio/laravel-ai-action/pull/49
+* chore(deps-dev): bump larastan/larastan from 3.9.6 to 3.10.0 by @dependabot[bot] in https://github.com/pixelworxio/laravel-ai-action/pull/50
+* chore(deps): bump laravel/ai from 0.7.0 to 0.7.2 by @dependabot[bot] in https://github.com/pixelworxio/laravel-ai-action/pull/51
+* chore(deps-dev): bump laravel/mcp from 0.7.1 to 0.7.2 by @dependabot[bot] in https://github.com/pixelworxio/laravel-ai-action/pull/52
+* chore(deps-dev): bump pestphp/pest from 4.7.0 to 4.7.2 by @dependabot[bot] in https://github.com/pixelworxio/laravel-ai-action/pull/53
+* chore(deps): bump laravel/framework from 13.12.0 to 13.14.0 by @dependabot[bot] in https://github.com/pixelworxio/laravel-ai-action/pull/54
+* chore(deps-dev): bump pestphp/pest from 4.7.2 to 4.7.3 by @dependabot[bot] in https://github.com/pixelworxio/laravel-ai-action/pull/55
+* chore(deps): bump laravel/ai from 0.7.2 to 0.8.1 by @dependabot[bot] in https://github.com/pixelworxio/laravel-ai-action/pull/56
+* chore(deps): bump laravel/framework from 13.14.0 to 13.15.0 by @dependabot[bot] in https://github.com/pixelworxio/laravel-ai-action/pull/57
+* chore(deps-dev): bump laravel/mcp from 0.7.2 to 0.8.1 by @dependabot[bot] in https://github.com/pixelworxio/laravel-ai-action/pull/58
+* chore(deps): bump laravel/framework from 13.15.0 to 13.16.1 by @dependabot[bot] in https://github.com/pixelworxio/laravel-ai-action/pull/60
+
+**Full Changelog**: https://github.com/pixelworxio/laravel-ai-action/compare/1.0.5...1.0.6
 
 ## [1.0.5](https://github.com/pixelworxio/laravel-ai-action/compare/1.0.4...1.0.5) - 2026-05-07
 
