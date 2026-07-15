@@ -15,6 +15,7 @@ use Laravel\Ai\StructuredAnonymousAgent;
 use Pixelworxio\LaravelAiAction\Contracts\AgentAction;
 use Pixelworxio\LaravelAiAction\Contracts\HasStreamingResponse;
 use Pixelworxio\LaravelAiAction\Contracts\HasStructuredOutput;
+use Pixelworxio\LaravelAiAction\Contracts\HasTimeout;
 use Pixelworxio\LaravelAiAction\Contracts\HasTools;
 use Pixelworxio\LaravelAiAction\DTOs\AgentContext;
 use Pixelworxio\LaravelAiAction\DTOs\AgentResult;
@@ -93,6 +94,7 @@ class RunAgentAction
             prompt: $agent->prompt($context),
             provider: $agent->provider(),
             model: $agent->model(),
+            timeout: $this->timeoutFor($agent),
         );
 
         return new AgentResult(
@@ -138,6 +140,7 @@ class RunAgentAction
             prompt: $agent->prompt($context),
             provider: $agent->provider(),
             model: $agent->model(),
+            timeout: $this->timeoutFor($agent),
         );
 
         if (! $response instanceof StructuredAgentResponse) {
@@ -182,6 +185,7 @@ class RunAgentAction
             prompt: $agent->prompt($context),
             provider: $agent->provider(),
             model: $agent->model(),
+            timeout: $this->timeoutFor($agent),
         );
 
         foreach ($stream as $event) {
@@ -229,6 +233,11 @@ class RunAgentAction
             messages: [],
             tools: $tools,
         );
+    }
+
+    private function timeoutFor(AgentAction $agent): ?int
+    {
+        return $agent instanceof HasTimeout ? $agent->timeout() : null;
     }
 
     /**

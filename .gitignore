@@ -33,3 +33,4 @@ auth.json
 
 # Claude Code local settings
 .claude/
+/.phpunit.cache
