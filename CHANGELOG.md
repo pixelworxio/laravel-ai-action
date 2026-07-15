@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/pixelworxio/laravel-ai-action/compare/1.0.7...HEAD)
+## [Unreleased](https://github.com/pixelworxio/laravel-ai-action/compare/1.0.8...HEAD)
 
 ### Added
 
@@ -51,6 +51,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`LaravelAiActionServiceProvider`** — Spatie `PackageServiceProvider` that registers the `ai-action` config file, binds `RunAgentAction` as a singleton, and registers the `make:ai-action` Artisan command.
 - **`make:ai-action` Artisan command** — generates `app/Ai/Actions/{Name}.php` from `stubs/action.stub`, resolving the published stub first and falling back to the package bundled stub.
 - **`config/ai-action.php`** — package configuration exposing `provider`, `model`, `queue`, `max_tokens`, and `logging` keys, each overridable via environment variables.
+
+## [1.0.8](https://github.com/pixelworxio/laravel-ai-action/compare/1.0.7...1.0.8) - 2026-07-15
+
+### What's Changed
+
+* chore(deps): bump laravel/framework from 13.16.1 to 13.17.0 by @dependabot[bot] in https://github.com/pixelworxio/laravel-ai-action/pull/62
+* chore(deps-dev): bump pestphp/pest from 4.7.3 to 4.7.4 by @dependabot[bot] in https://github.com/pixelworxio/laravel-ai-action/pull/63
+* chore(deps-dev): bump laravel/mcp from 0.8.1 to 0.8.2 by @dependabot[bot] in https://github.com/pixelworxio/laravel-ai-action/pull/64
+* chore(deps): bump laravel/framework from 13.17.0 to 13.18.1 by @dependabot[bot] in https://github.com/pixelworxio/laravel-ai-action/pull/65
+* chore(deps): bump laravel/ai from 0.8.1 to 0.9.0 by @dependabot[bot] in https://github.com/pixelworxio/laravel-ai-action/pull/66
+* chore(deps-dev): bump pestphp/pest from 4.7.4 to 4.7.5 by @dependabot[bot] in https://github.com/pixelworxio/laravel-ai-action/pull/67
+* chore(deps): bump laravel/framework from 13.18.1 to 13.19.0 by @dependabot[bot] in https://github.com/pixelworxio/laravel-ai-action/pull/68
+* Add HasTimeout and pass timeouts to requests by @whoisthisstud in https://github.com/pixelworxio/laravel-ai-action/pull/69
+
+**Full Changelog**: https://github.com/pixelworxio/laravel-ai-action/compare/1.0.7...1.0.8
 
 ## [1.0.7](https://github.com/pixelworxio/laravel-ai-action/compare/1.0.6...1.0.7) - 2026-06-25
 
