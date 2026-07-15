@@ -10,6 +10,7 @@ use Pixelworxio\LaravelAiAction\Actions\RunAgentAction;
 use Pixelworxio\LaravelAiAction\Contracts\AgentAction;
 use Pixelworxio\LaravelAiAction\Contracts\HasStreamingResponse;
 use Pixelworxio\LaravelAiAction\Contracts\HasStructuredOutput;
+use Pixelworxio\LaravelAiAction\Contracts\HasTimeout;
 use Pixelworxio\LaravelAiAction\Contracts\HasTools;
 use Pixelworxio\LaravelAiAction\DTOs\AgentContext;
 use Pixelworxio\LaravelAiAction\DTOs\AgentResult;
@@ -225,6 +226,47 @@ describe('RunAgentAction (direct execution)', function (): void {
             ->and($result->format)->toBe(OutputFormat::Text)
             ->and($result->text)->toBe('Hello from fake')
             ->and($result->structured)->toBeNull();
+    });
+
+    it('passes an action timeout to the Laravel AI request', function (): void {
+        $agent = new class implements AgentAction, HasTimeout
+        {
+            public function instructions(AgentContext $context): string
+            {
+                return 'You help with testing.';
+            }
+
+            public function prompt(AgentContext $context): string
+            {
+                return 'Say hello.';
+            }
+
+            public function provider(): string
+            {
+                return 'anthropic';
+            }
+
+            public function model(): string
+            {
+                return 'claude-sonnet-4-20250514';
+            }
+
+            public function timeout(): int
+            {
+                return 120;
+            }
+
+            public function handle(AgentContext $context): AgentResult
+            {
+                return app(RunAgentAction::class)->execute($this, $context);
+            }
+        };
+
+        AnonymousAgent::fake(['Hello from fake']);
+
+        app(RunAgentAction::class)->execute($agent, AgentContext::fromRecords([]));
+
+        AnonymousAgent::assertPrompted(fn ($prompt): bool => $prompt->timeout === 120);
     });
 
     it('executes text mode with HasTools agent using the tools', function (): void {
