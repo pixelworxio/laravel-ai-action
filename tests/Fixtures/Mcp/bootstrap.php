@@ -66,6 +66,7 @@ namespace Laravel\Mcp {
 
     use Laravel\Mcp\Server\Content\Text;
     use Laravel\Mcp\Server\Contracts\Content;
+    use Laravel\Mcp\Server\Tool;
 
     /**
      * Stub for Laravel\Mcp\Server — mirrors the surface used by AgentActionServer.
@@ -75,7 +76,7 @@ namespace Laravel\Mcp {
      */
     abstract class Server
     {
-        /** @var list<\Laravel\Mcp\Server\Tool> */
+        /** @var list<Tool> */
         protected array $tools = [];
 
         protected function boot(): void {}
