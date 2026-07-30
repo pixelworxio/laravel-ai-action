@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/pixelworxio/laravel-ai-action/compare/1.0.8...HEAD)
+## [Unreleased](https://github.com/pixelworxio/laravel-ai-action/compare/1.0.9...HEAD)
 
 ### Added
 
@@ -51,6 +51,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`LaravelAiActionServiceProvider`** — Spatie `PackageServiceProvider` that registers the `ai-action` config file, binds `RunAgentAction` as a singleton, and registers the `make:ai-action` Artisan command.
 - **`make:ai-action` Artisan command** — generates `app/Ai/Actions/{Name}.php` from `stubs/action.stub`, resolving the published stub first and falling back to the package bundled stub.
 - **`config/ai-action.php`** — package configuration exposing `provider`, `model`, `queue`, `max_tokens`, and `logging` keys, each overridable via environment variables.
+
+## [1.0.9](https://github.com/pixelworxio/laravel-ai-action/compare/1.0.8...1.0.9) - 2026-07-30
+
+### What's Changed
+
+* chore(deps-dev): bump nunomaduro/collision from 8.9.4 to 8.9.5 by @dependabot[bot] in https://github.com/pixelworxio/laravel-ai-action/pull/70
+* chore(deps): bump laravel/framework from 13.19.0 to 13.20.0 by @dependabot[bot] in https://github.com/pixelworxio/laravel-ai-action/pull/71
+* chore(deps-dev): bump laravel/mcp from 0.8.2 to 0.9.0 by @dependabot[bot] in https://github.com/pixelworxio/laravel-ai-action/pull/72
+* chore(deps): bump laravel/ai from 0.9.0 to 0.9.1 by @dependabot[bot] in https://github.com/pixelworxio/laravel-ai-action/pull/73
+* chore(deps): bump laravel/ai from 0.9.1 to 0.10.1 by @dependabot[bot] in https://github.com/pixelworxio/laravel-ai-action/pull/74
+* chore(deps-dev): bump laravel/mcp from 0.9.0 to 0.9.1 by @dependabot[bot] in https://github.com/pixelworxio/laravel-ai-action/pull/75
+* chore(deps): bump laravel/framework from 13.20.0 to 13.22.0 by @dependabot[bot] in https://github.com/pixelworxio/laravel-ai-action/pull/76
+
+**Full Changelog**: https://github.com/pixelworxio/laravel-ai-action/compare/1.0.8...1.0.9
 
 ## [1.0.8](https://github.com/pixelworxio/laravel-ai-action/compare/1.0.7...1.0.8) - 2026-07-15
 
