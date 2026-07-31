@@ -59,13 +59,41 @@ describe('AgentResult', function (): void {
         });
     });
 
+    describe('cost()', function (): void {
+        it('computes cost from the configured per-million-token rate', function (): void {
+            config(['ai-action.pricing.anthropic.claude-sonnet-4-20250514' => [
+                'input' => 3.00,
+                'output' => 15.00,
+            ]]);
+
+            $result = new AgentResult(
+                text: 'Hello',
+                format: OutputFormat::Text,
+                structured: null,
+                inputTokens: 1_000_000,
+                outputTokens: 500_000,
+                provider: 'anthropic',
+                model: 'claude-sonnet-4-20250514',
+                metadata: [],
+            );
+
+            expect($result->cost())->toBe(3.00 + 7.50);
+        });
+
+        it('returns null when no pricing is configured for the provider/model pair', function (): void {
+            config(['ai-action.pricing' => []]);
+
+            expect(makeAgentResultText()->cost())->toBeNull();
+        });
+    });
+
     describe('toArray()', function (): void {
         it('contains all expected keys for a text result', function (): void {
             $array = makeAgentResultText('Hello world')->toArray();
 
             expect($array)->toHaveKeys([
                 'text', 'format', 'structured', 'input_tokens',
-                'output_tokens', 'provider', 'model', 'metadata',
+                'output_tokens', 'provider', 'model', 'metadata', 'cost',
             ])
                 ->and($array['text'])->toBe('Hello world')
                 ->and($array['format'])->toBe('Text')

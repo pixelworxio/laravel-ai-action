@@ -18,7 +18,8 @@
         "spatie/laravel-package-tools": "^1.16"
     },
     "suggest": {
-        "laravel/mcp": "Required to expose agent actions as MCP tools (>=0.1)."
+        "laravel/mcp": "Required to expose agent actions as MCP tools (>=0.1).",
+        "laravel/pulse": "Required for the bundled AgentActionRecorder and Pulse dashboard card."
     },
     "require-dev": {
         "laravel/mcp": ">=0.1",
@@ -30,7 +31,9 @@
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan-deprecation-rules": "^2.0",
         "laravel/pint": "^1.14",
-        "nunomaduro/collision": "^8.8"
+        "nunomaduro/collision": "^8.8",
+        "laravel/pulse": "^1.7",
+        "livewire/livewire": "^4.3"
     },
     "autoload": { "psr-4": { "Pixelworxio\\LaravelAiAction\\": "src/" } },
     "autoload-dev": { "psr-4": { "Pixelworxio\\LaravelAiAction\\Tests\\": "tests/" } },

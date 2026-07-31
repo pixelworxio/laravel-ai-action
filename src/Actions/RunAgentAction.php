@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Pixelworxio\LaravelAiAction\Actions;
 
+use Closure;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Illuminate\JsonSchema\Types\Type;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Laravel\Ai\AnonymousAgent;
 use Laravel\Ai\Responses\Data\Usage;
@@ -13,6 +15,8 @@ use Laravel\Ai\Responses\StructuredAgentResponse;
 use Laravel\Ai\Streaming\Events\TextDelta;
 use Laravel\Ai\StructuredAnonymousAgent;
 use Pixelworxio\LaravelAiAction\Contracts\AgentAction;
+use Pixelworxio\LaravelAiAction\Contracts\AgentActionMiddleware;
+use Pixelworxio\LaravelAiAction\Contracts\HasMiddleware;
 use Pixelworxio\LaravelAiAction\Contracts\HasStreamingResponse;
 use Pixelworxio\LaravelAiAction\Contracts\HasStructuredOutput;
 use Pixelworxio\LaravelAiAction\Contracts\HasTimeout;
@@ -20,6 +24,7 @@ use Pixelworxio\LaravelAiAction\Contracts\HasTools;
 use Pixelworxio\LaravelAiAction\DTOs\AgentContext;
 use Pixelworxio\LaravelAiAction\DTOs\AgentResult;
 use Pixelworxio\LaravelAiAction\Enums\OutputFormat;
+use Pixelworxio\LaravelAiAction\Events\AgentActionCompleted;
 use Pixelworxio\LaravelAiAction\Exceptions\AgentException;
 
 /**
@@ -54,17 +59,15 @@ class RunAgentAction
      */
     public function execute(AgentAction $agent, AgentContext $context): AgentResult
     {
-        try {
-            $result = match (true) {
-                $agent instanceof HasStructuredOutput => $this->executeStructured($agent, $context),
-                $agent instanceof HasStreamingResponse => $this->executeStreaming($agent, $context),
-                default => $this->executeText($agent, $context),
-            };
-        } catch (AgentException $e) {
-            throw $e;
-        } catch (\Throwable $e) {
-            throw AgentException::fromThrowable($agent, $e);
-        }
+        $startedAt = hrtime(true);
+
+        $destination = fn (AgentAction $agent, AgentContext $context): AgentResult => $this->runOnce($agent, $context);
+
+        $result = $agent instanceof HasMiddleware
+            ? $this->through($agent->middleware(), $destination)($agent, $context)
+            : $destination($agent, $context);
+
+        $durationMs = (hrtime(true) - $startedAt) / 1_000_000;
 
         if ((bool) config('ai-action.logging', false)) {
             Log::info('ai-action.executed', [
@@ -76,7 +79,62 @@ class RunAgentAction
             ]);
         }
 
+        Event::dispatch(new AgentActionCompleted(
+            agentClass: $agent::class,
+            result: $result,
+            durationMs: $durationMs,
+        ));
+
         return $result;
+    }
+
+    /**
+     * Run the agent exactly once, with no middleware involved.
+     *
+     * This is the innermost "destination" that a middleware pipeline (when
+     * the agent implements HasMiddleware) ultimately wraps. Selects the
+     * correct execution branch and normalises any failure into an
+     * AgentException, exactly as execute() did before middleware support
+     * was introduced.
+     *
+     * @param  AgentAction  $agent  The agent action to execute.
+     * @param  AgentContext  $context  The runtime context for the invocation.
+     * @return AgentResult The typed result wrapping the AI response.
+     *
+     * @throws AgentException When the AI provider call fails.
+     */
+    private function runOnce(AgentAction $agent, AgentContext $context): AgentResult
+    {
+        try {
+            return match (true) {
+                $agent instanceof HasStructuredOutput => $this->executeStructured($agent, $context),
+                $agent instanceof HasStreamingResponse => $this->executeStreaming($agent, $context),
+                default => $this->executeText($agent, $context),
+            };
+        } catch (AgentException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            throw AgentException::fromThrowable($agent, $e);
+        }
+    }
+
+    /**
+     * Compose a middleware pipeline around the given destination closure.
+     *
+     * The first entry in $middleware is outermost, matching Laravel's queued
+     * job middleware convention.
+     *
+     * @param  array<int, AgentActionMiddleware>  $middleware
+     * @param  Closure(AgentAction, AgentContext): AgentResult  $destination
+     * @return Closure(AgentAction, AgentContext): AgentResult
+     */
+    private function through(array $middleware, Closure $destination): Closure
+    {
+        return array_reduce(
+            array_reverse($middleware),
+            static fn (Closure $next, AgentActionMiddleware $stage): Closure => static fn (AgentAction $agent, AgentContext $context): AgentResult => $stage->handle($agent, $context, $next),
+            $destination,
+        );
     }
 
     /**
@@ -92,8 +150,8 @@ class RunAgentAction
 
         $response = $sdkAgent->prompt(
             prompt: $agent->prompt($context),
-            provider: $agent->provider(),
-            model: $agent->model(),
+            provider: $this->providerFor($agent, $context),
+            model: $this->modelFor($agent, $context),
             timeout: $this->timeoutFor($agent),
         );
 
@@ -103,8 +161,8 @@ class RunAgentAction
             structured: null,
             inputTokens: $response->usage->promptTokens,
             outputTokens: $response->usage->completionTokens,
-            provider: $agent->provider(),
-            model: $agent->model(),
+            provider: $this->providerFor($agent, $context),
+            model: $this->modelFor($agent, $context),
             metadata: $response->meta->toArray(),
         );
     }
@@ -138,8 +196,8 @@ class RunAgentAction
 
         $response = $sdkAgent->prompt(
             prompt: $agent->prompt($context),
-            provider: $agent->provider(),
-            model: $agent->model(),
+            provider: $this->providerFor($agent, $context),
+            model: $this->modelFor($agent, $context),
             timeout: $this->timeoutFor($agent),
         );
 
@@ -158,8 +216,8 @@ class RunAgentAction
             structured: $mapped,
             inputTokens: $response->usage->promptTokens,
             outputTokens: $response->usage->completionTokens,
-            provider: $agent->provider(),
-            model: $agent->model(),
+            provider: $this->providerFor($agent, $context),
+            model: $this->modelFor($agent, $context),
             metadata: $response->meta->toArray(),
         );
     }
@@ -183,8 +241,8 @@ class RunAgentAction
 
         $stream = $sdkAgent->stream(
             prompt: $agent->prompt($context),
-            provider: $agent->provider(),
-            model: $agent->model(),
+            provider: $this->providerFor($agent, $context),
+            model: $this->modelFor($agent, $context),
             timeout: $this->timeoutFor($agent),
         );
 
@@ -207,8 +265,8 @@ class RunAgentAction
             structured: null,
             inputTokens: $usage->promptTokens,
             outputTokens: $usage->completionTokens,
-            provider: $agent->provider(),
-            model: $agent->model(),
+            provider: $this->providerFor($agent, $context),
+            model: $this->modelFor($agent, $context),
             metadata: [],
         );
 
@@ -238,6 +296,24 @@ class RunAgentAction
     private function timeoutFor(AgentAction $agent): ?int
     {
         return $agent instanceof HasTimeout ? $agent->timeout() : null;
+    }
+
+    /**
+     * Resolve the provider to use, preferring a context override (set by
+     * middleware such as FallbackProvider) over the agent's own provider().
+     */
+    private function providerFor(AgentAction $agent, AgentContext $context): string
+    {
+        return $context->providerOverride ?? $agent->provider();
+    }
+
+    /**
+     * Resolve the model to use, preferring a context override (set by
+     * middleware such as FallbackProvider) over the agent's own model().
+     */
+    private function modelFor(AgentAction $agent, AgentContext $context): string
+    {
+        return $context->modelOverride ?? $agent->model();
     }
 
     /**

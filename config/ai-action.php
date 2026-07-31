@@ -72,4 +72,43 @@ return [
         'discover_in' => [],
         'cache_discovery' => env('AI_ACTION_MCP_CACHE_DISCOVERY', true),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Pricing
+    |--------------------------------------------------------------------------
+    |
+    | Per-million-token USD rates used by AgentResult::cost() to compute the
+    | cost of a single invocation. Keyed by provider, then exact model
+    | identifier. Rates below are illustrative and change frequently — check
+    | your provider's current pricing page before relying on these for
+    | budgeting. A missing provider/model pair makes cost() return null
+    | rather than a misleading 0.0.
+    |
+    */
+    'pricing' => [
+        'anthropic' => [
+            'claude-opus-4-20250514' => ['input' => 15.00, 'output' => 75.00],
+            'claude-sonnet-4-20250514' => ['input' => 3.00, 'output' => 15.00],
+            'claude-haiku-4-20250514' => ['input' => 0.80, 'output' => 4.00],
+        ],
+        'openai' => [
+            'gpt-4o' => ['input' => 2.50, 'output' => 10.00],
+            'gpt-4o-mini' => ['input' => 0.15, 'output' => 0.60],
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Laravel Pulse Integration
+    |--------------------------------------------------------------------------
+    |
+    | When enabled (and laravel/pulse is installed), every agent invocation is
+    | recorded to Pulse via the bundled AgentActionRecorder, powering the
+    | <livewire:pulse.ai-actions /> card. See docs/pulse.md for setup.
+    |
+    */
+    'pulse' => [
+        'enabled' => env('AI_ACTION_PULSE_ENABLED', false),
+    ],
 ];

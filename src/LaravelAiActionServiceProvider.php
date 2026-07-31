@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Pixelworxio\LaravelAiAction;
 
+use Livewire\Livewire;
 use Pixelworxio\LaravelAiAction\Actions\RunAgentAction;
 use Pixelworxio\LaravelAiAction\Commands\MakeAiActionCommand;
 use Pixelworxio\LaravelAiAction\Mcp\Bridge;
+use Pixelworxio\LaravelAiAction\Pulse\Livewire\AgentActionsCard;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -40,6 +42,7 @@ final class LaravelAiActionServiceProvider extends PackageServiceProvider
         $package
             ->name('ai-action')
             ->hasConfigFile('ai-action')
+            ->hasViews()
             ->hasCommands([
                 MakeAiActionCommand::class,
             ]);
@@ -97,6 +100,18 @@ final class LaravelAiActionServiceProvider extends PackageServiceProvider
                 $bridge = $this->app->make(Bridge::class);
                 $bridge->flush();
             });
+        }
+
+        // String literal intentional: keeps the Pulse card classmap entry cold
+        // until we have confirmed the optional dependency is present. Also
+        // gated on ai-action.pulse.enabled — merely having laravel/pulse
+        // installed should not force a Livewire::component() call (and
+        // therefore a Livewire container binding) on every application.
+        if (
+            class_exists('Laravel\\Pulse\\Livewire\\Card')
+            && (bool) config('ai-action.pulse.enabled', false)
+        ) {
+            Livewire::component('pulse.ai-actions', AgentActionsCard::class);
         }
     }
 }
