@@ -22,6 +22,8 @@ final readonly class AgentContext
      * @param  string|null  $userInstruction  Optional free-text instruction from the end user.
      * @param  string|null  $panelId  Optional Filament panel identifier.
      * @param  string|null  $resourceClass  Optional Filament resource class name.
+     * @param  string|null  $providerOverride  Provider key to use instead of the agent's own provider(), set by middleware such as FallbackProvider.
+     * @param  string|null  $modelOverride  Model identifier to use instead of the agent's own model(), set alongside $providerOverride.
      */
     public function __construct(
         public readonly ?Model $record,
@@ -30,6 +32,8 @@ final readonly class AgentContext
         public readonly ?string $userInstruction,
         public readonly ?string $panelId,
         public readonly ?string $resourceClass,
+        public readonly ?string $providerOverride = null,
+        public readonly ?string $modelOverride = null,
     ) {}
 
     /**
@@ -88,6 +92,33 @@ final readonly class AgentContext
             userInstruction: $this->userInstruction,
             panelId: $this->panelId,
             resourceClass: $this->resourceClass,
+            providerOverride: $this->providerOverride,
+            modelOverride: $this->modelOverride,
+        );
+    }
+
+    /**
+     * Return a new instance that overrides the provider (and optionally model)
+     * used for this invocation.
+     *
+     * Used by middleware such as FallbackProvider to redirect execution to a
+     * different provider without the agent itself needing to know.
+     *
+     * @param  string  $provider  The provider key to use instead of the agent's provider().
+     * @param  string|null  $model  Optional model identifier to use instead of the agent's model().
+     * @return self A new AgentContext instance carrying the override.
+     */
+    public function withProvider(string $provider, ?string $model = null): self
+    {
+        return new self(
+            record: $this->record,
+            records: $this->records,
+            meta: $this->meta,
+            userInstruction: $this->userInstruction,
+            panelId: $this->panelId,
+            resourceClass: $this->resourceClass,
+            providerOverride: $provider,
+            modelOverride: $model ?? $this->modelOverride,
         );
     }
 }

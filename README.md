@@ -20,6 +20,9 @@ This package offers an architectural pattern that sits on top of `laravel/ai` to
 | **Queue support** | None built-in | `RunAgentActionJob` (unique, queueable) |
 | **Testing** | Mock the SDK | `FakeAgentAction` + fluent assertions |
 | **Artisan scaffolding** | None | `php artisan make:ai-action` |
+| **Resilience** | Manual | `HasMiddleware` — retry, idempotency, provider fallback |
+| **Cost tracking** | Manual | `AgentResult::cost()` from a configurable pricing table |
+| **Observability** | None built-in | Opt-in Laravel Pulse card |
 
 If you're wiring AI calls directly into controllers or service classes, you're reinventing this. `laravel-ai-action` gives every AI capability in your app a **consistent, discoverable home** — the same way `laravel/actions` does for business logic.
 
@@ -116,6 +119,27 @@ See [**docs/mcp.md**](docs/mcp.md) for the full guide including auth scoping, an
 
 ---
 
+## Middleware, Cost Tracking & Observability
+
+Wrap any action's execution in a middleware pipeline — the same pattern Laravel uses for queued jobs — for retries, idempotency, and provider fallback:
+
+```php
+public function middleware(): array
+{
+    return [
+        new Idempotent(ttl: now()->addHour()),
+        new FallbackProvider(['openai']),
+        new RetryAgentCall(times: 3, backoffSeconds: [1, 5, 10]),
+    ];
+}
+```
+
+Every `AgentResult` can report its own USD cost via `$result->cost()`, computed from a configurable per-model pricing table. And when [Laravel Pulse](https://laravel.com/docs/pulse) is installed, an opt-in `<livewire:pulse.ai-actions />` card shows call volume, cost, latency, and token usage per action — no bespoke dashboard to maintain.
+
+See [**docs/middleware.md**](docs/middleware.md), [**docs/cost-tracking.md**](docs/cost-tracking.md), and [**docs/pulse.md**](docs/pulse.md).
+
+---
+
 ## Documentation
 
 - [**Actions**](docs/actions.md) — creating actions, contracts, and execution modes
@@ -125,6 +149,9 @@ See [**docs/mcp.md**](docs/mcp.md) for the full guide including auth scoping, an
 - [**Configuration**](docs/configuration.md) — all config keys and environment variables
 - [**Queue**](docs/queue.md) — background execution with `RunAgentActionJob`
 - [**MCP Bridge**](docs/mcp.md) — exposing actions as MCP tools (opt-in)
+- [**Middleware**](docs/middleware.md) — retries, idempotency, and provider fallback
+- [**Cost Tracking**](docs/cost-tracking.md) — per-call USD cost from token usage
+- [**Laravel Pulse**](docs/pulse.md) — production observability dashboard (opt-in)
 
 ---
 

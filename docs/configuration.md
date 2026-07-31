@@ -15,6 +15,9 @@ php artisan vendor:publish --tag=ai-action-config
 | `queue` | `AI_ACTION_QUEUE` | `"default"` | Queue name for `RunAgentActionJob`. |
 | `max_tokens` | `AI_ACTION_MAX_TOKENS` | `2048` | Maximum output tokens per request. |
 | `logging` | `AI_ACTION_LOGGING` | `false` | Log invocations via `Log::info('ai-action.executed', …)`. |
+| `mcp.enabled` | `AI_ACTION_MCP_ENABLED` | `false` | Enable the [MCP bridge](mcp.md). |
+| `pricing` | — | Illustrative rates for a few common models | Per-million-token USD rates used by [`AgentResult::cost()`](cost-tracking.md). |
+| `pulse.enabled` | `AI_ACTION_PULSE_ENABLED` | `false` | Enable the [Laravel Pulse integration](pulse.md). |
 
 ## Per-Action Override
 

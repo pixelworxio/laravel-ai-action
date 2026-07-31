@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pixelworxio\LaravelAiAction\DTOs;
 
 use Pixelworxio\LaravelAiAction\Enums\OutputFormat;
+use Pixelworxio\LaravelAiAction\Support\Pricing;
 
 /**
  * Immutable value object representing the result of an AI agent action.
@@ -47,6 +48,17 @@ final readonly class AgentResult
     }
 
     /**
+     * Compute the USD cost of this invocation from config('ai-action.pricing').
+     *
+     * @return float|null The computed cost, or null when no rate is configured
+     *                    for this provider/model pair.
+     */
+    public function cost(): ?float
+    {
+        return Pricing::costFor($this->provider, $this->model, $this->inputTokens, $this->outputTokens);
+    }
+
+    /**
      * Serialize the result to a plain array representation.
      *
      * @return array<string, mixed> The result as an associative array.
@@ -62,6 +74,7 @@ final readonly class AgentResult
             'provider' => $this->provider,
             'model' => $this->model,
             'metadata' => $this->metadata,
+            'cost' => $this->cost(),
         ];
     }
 }

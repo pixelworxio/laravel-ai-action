@@ -19,8 +19,11 @@
 
 ```php
 $result->isStructured(); // true when $format === OutputFormat::Structured
-$result->toArray();      // serialize all properties to an associative array
+$result->cost();         // USD cost from config('ai-action.pricing'), or null if unpriced
+$result->toArray();      // serialize all properties (including cost) to an associative array
 ```
+
+See [**docs/cost-tracking.md**](cost-tracking.md) for configuring pricing rates.
 
 ## Example
 

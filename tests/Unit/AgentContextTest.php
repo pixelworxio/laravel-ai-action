@@ -80,6 +80,36 @@ describe('AgentContext', function (): void {
         });
     });
 
+    describe('withProvider()', function (): void {
+        it('sets the provider override and leaves model override null by default', function (): void {
+            $original = AgentContext::fromRecords([]);
+
+            $updated = $original->withProvider('openai');
+
+            expect($updated)->not->toBe($original)
+                ->and($updated->providerOverride)->toBe('openai')
+                ->and($updated->modelOverride)->toBeNull()
+                ->and($original->providerOverride)->toBeNull();
+        });
+
+        it('sets both provider and model overrides when given', function (): void {
+            $updated = AgentContext::fromRecords([])->withProvider('openai', 'gpt-4o-mini');
+
+            expect($updated->providerOverride)->toBe('openai')
+                ->and($updated->modelOverride)->toBe('gpt-4o-mini');
+        });
+
+        it('preserves all other context properties', function (): void {
+            $model = Mockery::mock(Model::class);
+            $original = AgentContext::fromRecord($model, ['x' => 'y']);
+
+            $updated = $original->withProvider('openai');
+
+            expect($updated->record)->toBe($model)
+                ->and($updated->meta)->toBe(['x' => 'y']);
+        });
+    });
+
     describe('readonly enforcement', function (): void {
         it('is a readonly final class', function (): void {
             $reflection = new ReflectionClass(AgentContext::class);

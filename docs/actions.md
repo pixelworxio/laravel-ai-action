@@ -148,6 +148,27 @@ final class StreamSummary implements AgentAction, HasStreamingResponse
 }
 ```
 
+### `HasMiddleware`
+
+Wraps execution in a pipeline of retry, idempotency, and provider-fallback stages — the same pattern Laravel uses for queued job middleware. See [**docs/middleware.md**](middleware.md) for the full guide.
+
+```php
+final class SummarizeInvoice implements AgentAction, HasMiddleware
+{
+    use InteractsWithAgent;
+
+    public function middleware(): array
+    {
+        return [
+            new Idempotent(ttl: now()->addHour()),
+            new RetryAgentCall(times: 3),
+        ];
+    }
+
+    // ...
+}
+```
+
 ## Execution Priority
 
 When multiple contracts are implemented, `RunAgentAction` selects the branch in this order:
@@ -156,4 +177,4 @@ When multiple contracts are implemented, `RunAgentAction` selects the branch in 
 2. `HasStreamingResponse`
 3. Default (plain text)
 
-`HasTools` is orthogonal — tools are always registered when the interface is present.
+`HasTools` is orthogonal — tools are always registered when the interface is present. `HasMiddleware` is also orthogonal — it wraps whichever branch is selected above.
