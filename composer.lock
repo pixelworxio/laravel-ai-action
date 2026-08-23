@@ -7287,16 +7287,16 @@
         },
         {
             "name": "laravel/pulse",
-            "version": "v1.7.4",
+            "version": "v1.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/pulse.git",
-                "reference": "6daab88ef368c0a1272a4401d90d514b30829225"
+                "reference": "4425bf155c6b515b5bb671b1b75826332d0c049f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/pulse/zipball/6daab88ef368c0a1272a4401d90d514b30829225",
-                "reference": "6daab88ef368c0a1272a4401d90d514b30829225",
+                "url": "https://api.github.com/repos/laravel/pulse/zipball/4425bf155c6b515b5bb671b1b75826332d0c049f",
+                "reference": "4425bf155c6b515b5bb671b1b75826332d0c049f",
                 "shasum": ""
             },
             "require": {
@@ -7316,6 +7316,7 @@
                 "illuminate/support": "^10.48.4|^11.0.8|^12.0|^13.0",
                 "illuminate/view": "^10.48.4|^11.0.8|^12.0|^13.0",
                 "laravel/sentinel": "^1.0",
+                "league/uri": "^7.5.1",
                 "livewire/livewire": "^3.6.4|^4.0",
                 "nesbot/carbon": "^2.67|^3.0",
                 "php": "^8.1",
@@ -7330,7 +7331,7 @@
                 "orchestra/testbench": "^8.36|^9.15|^10.8|^11.0",
                 "pestphp/pest": "^2.0|^3.0|^4.0",
                 "pestphp/pest-plugin-laravel": "^2.2|^3.0|^4.0",
-                "phpstan/phpstan": "^1.12.21",
+                "phpstan/phpstan": "^2.1.33",
                 "predis/predis": "^1.0|^2.0"
             },
             "type": "library",
@@ -7371,7 +7372,7 @@
                 "issues": "https://github.com/laravel/pulse/issues",
                 "source": "https://github.com/laravel/pulse"
             },
-            "time": "2026-06-03T14:04:01+00:00"
+            "time": "2026-07-29T14:49:37+00:00"
         },
         {
             "name": "laravel/sentinel",
