@@ -62,16 +62,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.393.4",
+            "version": "3.394.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "a5880510e500aa0fe13a6410183cd222b3263890"
+                "reference": "c5e7a247fa6aeac7355d5be88f38873480789c71"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/a5880510e500aa0fe13a6410183cd222b3263890",
-                "reference": "a5880510e500aa0fe13a6410183cd222b3263890",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/c5e7a247fa6aeac7355d5be88f38873480789c71",
+                "reference": "c5e7a247fa6aeac7355d5be88f38873480789c71",
                 "shasum": ""
             },
             "require": {
@@ -153,9 +153,9 @@
             "support": {
                 "forum": "https://github.com/aws/aws-sdk-php/discussions",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.393.4"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.394.9"
             },
-            "time": "2026-08-21T18:24:57+00:00"
+            "time": "2026-09-04T18:07:00+00:00"
         },
         {
             "name": "brick/math",
@@ -1210,16 +1210,16 @@
         },
         {
             "name": "laravel/ai",
-            "version": "v0.11.0",
+            "version": "v0.11.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/ai.git",
-                "reference": "dd08142f0c4dc4d5544521ce3fc4a1b9c2fe748c"
+                "reference": "47b171613da075ed9327cebb2c7f58e0654251bd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/ai/zipball/dd08142f0c4dc4d5544521ce3fc4a1b9c2fe748c",
-                "reference": "dd08142f0c4dc4d5544521ce3fc4a1b9c2fe748c",
+                "url": "https://api.github.com/repos/laravel/ai/zipball/47b171613da075ed9327cebb2c7f58e0654251bd",
+                "reference": "47b171613da075ed9327cebb2c7f58e0654251bd",
                 "shasum": ""
             },
             "require": {
@@ -1282,7 +1282,7 @@
                 "issues": "https://github.com/laravel/ai/issues",
                 "source": "https://github.com/laravel/ai"
             },
-            "time": "2026-08-19T03:03:13+00:00"
+            "time": "2026-09-02T06:18:42+00:00"
         },
         {
             "name": "laravel/framework",
